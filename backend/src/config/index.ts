@@ -11,6 +11,12 @@ export const config = {
     url: process.env.DATABASE_URL || '',
   },
 
+  supabase: {
+    url: process.env.SUPABASE_URL || '',
+    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+    storageBucket: process.env.SUPABASE_STORAGE_BUCKET || 'listing-media',
+  },
+
   redis: {
     url: process.env.REDIS_URL || 'redis://localhost:6379',
   },
@@ -44,5 +50,9 @@ export const config = {
     accessToken: process.env.MAPBOX_ACCESS_TOKEN || '',
   },
 
-  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3001',
+  // Comma-separated list of allowed origins, e.g. "http://localhost:3001,https://your-app.vercel.app"
+  allowedOrigins: (process.env.FRONTEND_URL || 'http://localhost:3001')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
 };
