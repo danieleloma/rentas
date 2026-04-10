@@ -6,8 +6,13 @@ import { z } from 'zod';
 
 const router = Router();
 
+const emailSchema = z
+  .string()
+  .email()
+  .transform((s) => s.trim().toLowerCase());
+
 const registerSchema = z.object({
-  email: z.string().email(),
+  email: emailSchema,
   password: z.string().min(8).max(128),
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
@@ -16,7 +21,7 @@ const registerSchema = z.object({
 });
 
 const loginSchema = z.object({
-  email: z.string().email(),
+  email: emailSchema,
   password: z.string().min(1),
 });
 
@@ -27,7 +32,11 @@ const refreshSchema = z.object({
 router.post('/register', validate(registerSchema), AuthController.register);
 router.post('/login', validate(loginSchema), AuthController.login);
 router.post('/refresh', validate(refreshSchema), AuthController.refresh);
-router.post('/logout', authenticate, AuthController.logout);
+const logoutSchema = z.object({
+  refreshToken: z.string().min(1).optional(),
+});
+
+router.post('/logout', authenticate, validate(logoutSchema), AuthController.logout);
 router.get('/me', authenticate, AuthController.me);
 
 export { router as authRoutes };

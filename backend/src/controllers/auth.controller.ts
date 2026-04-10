@@ -41,7 +41,15 @@ export class AuthController {
     }
   }
 
-  static async logout(_req: Request, res: Response) {
-    return ApiResponse.success(res, { message: 'Logged out successfully' });
+  static async logout(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { refreshToken } = req.body;
+      if (refreshToken) {
+        await AuthService.logout(refreshToken);
+      }
+      return ApiResponse.success(res, { message: 'Logged out successfully' });
+    } catch (err) {
+      next(err);
+    }
   }
 }

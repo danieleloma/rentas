@@ -4,8 +4,14 @@ import { prisma } from '../config/database';
 import { config } from '../config';
 import { JwtPayload, UserRole } from '../types';
 import { AppError } from '../middleware/errorHandler.middleware';
+import { TokenBlacklistService } from './tokenBlacklist.service';
 
 export class AuthService {
+  /** Single canonical form for emails (avoids duplicate accounts differing only by case). */
+  static normalizeEmail(email: string): string {
+    return email.trim().toLowerCase();
+  }
+
   static async register(data: {
     email: string;
     password: string;
@@ -14,7 +20,10 @@ export class AuthService {
     phone?: string;
     role?: UserRole;
   }) {
-    const existing = await prisma.user.findUnique({ where: { email: data.email } });
+    const email = AuthService.normalizeEmail(data.email);
+    const existing = await prisma.user.findFirst({
+      where: { email: { equals: email, mode: 'insensitive' } },
+    });
     if (existing) {
       throw new AppError(409, 'CONFLICT', 'Email already registered');
     }
@@ -23,7 +32,7 @@ export class AuthService {
 
     const user = await prisma.user.create({
       data: {
-        email: data.email,
+        email,
         passwordHash,
         firstName: data.firstName,
         lastName: data.lastName,
@@ -50,7 +59,10 @@ export class AuthService {
   }
 
   static async login(email: string, password: string) {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const normalized = AuthService.normalizeEmail(email);
+    const user = await prisma.user.findFirst({
+      where: { email: { equals: normalized, mode: 'insensitive' } },
+    });
     if (!user || !user.isActive) {
       throw new AppError(401, 'UNAUTHORIZED', 'Invalid email or password');
     }
@@ -60,21 +72,26 @@ export class AuthService {
       throw new AppError(401, 'UNAUTHORIZED', 'Invalid email or password');
     }
 
+    const canonicalEmail = user.email !== normalized ? normalized : user.email;
+
     await prisma.user.update({
       where: { id: user.id },
-      data: { lastLoginAt: new Date() },
+      data: {
+        lastLoginAt: new Date(),
+        ...(user.email !== normalized ? { email: normalized } : {}),
+      },
     });
 
     const tokens = AuthService.generateTokens({
       userId: user.id,
-      email: user.email,
+      email: canonicalEmail,
       role: user.role as UserRole,
     });
 
     return {
       user: {
         id: user.id,
-        email: user.email,
+        email: canonicalEmail,
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
@@ -85,21 +102,43 @@ export class AuthService {
   }
 
   static async refreshToken(refreshToken: string) {
+    let decoded: JwtPayload & { exp?: number };
+
     try {
-      const decoded = jwt.verify(refreshToken, config.jwt.refreshSecret) as JwtPayload;
-
-      const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
-      if (!user || !user.isActive) {
-        throw new AppError(401, 'UNAUTHORIZED', 'User not found or inactive');
-      }
-
-      return AuthService.generateTokens({
-        userId: user.id,
-        email: user.email,
-        role: user.role as UserRole,
-      });
+      decoded = jwt.verify(refreshToken, config.jwt.refreshSecret) as JwtPayload & { exp?: number };
     } catch {
       throw new AppError(401, 'UNAUTHORIZED', 'Invalid refresh token');
+    }
+
+    if (await TokenBlacklistService.isBlacklisted(refreshToken)) {
+      throw new AppError(401, 'UNAUTHORIZED', 'Refresh token has been revoked');
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+    if (!user || !user.isActive) {
+      throw new AppError(401, 'UNAUTHORIZED', 'User not found or inactive');
+    }
+
+    // Rotate: blacklist old refresh token for its remaining TTL
+    const remainingTtl = decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : 604800;
+    await TokenBlacklistService.blacklist(refreshToken, remainingTtl);
+
+    return AuthService.generateTokens({
+      userId: user.id,
+      email: user.email,
+      role: user.role as UserRole,
+    });
+  }
+
+  static async logout(refreshToken: string): Promise<void> {
+    try {
+      const decoded = jwt.decode(refreshToken) as (JwtPayload & { exp?: number }) | null;
+      if (decoded?.exp) {
+        const ttl = decoded.exp - Math.floor(Date.now() / 1000);
+        await TokenBlacklistService.blacklist(refreshToken, ttl);
+      }
+    } catch {
+      // Best-effort — don't block logout on Redis failures
     }
   }
 
@@ -129,12 +168,12 @@ export class AuthService {
 
   private static generateTokens(payload: JwtPayload) {
     const accessToken = jwt.sign(payload, config.jwt.secret, {
-      expiresIn: config.jwt.expiresIn as string,
-    });
+      expiresIn: config.jwt.expiresIn,
+    } as jwt.SignOptions);
 
     const refreshToken = jwt.sign(payload, config.jwt.refreshSecret, {
-      expiresIn: config.jwt.refreshExpiresIn as string,
-    });
+      expiresIn: config.jwt.refreshExpiresIn,
+    } as jwt.SignOptions);
 
     return { accessToken, refreshToken };
   }

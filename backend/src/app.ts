@@ -2,7 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
 import { config } from './config';
+import { swaggerSpec } from './config/swagger';
 import { errorHandler } from './middleware/errorHandler.middleware';
 import { rateLimit } from './middleware/rateLimit.middleware';
 import { routes } from './routes';
@@ -22,6 +24,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(rateLimit(100));
 
 app.use('/api', routes);
+
+if (config.isDev) {
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
