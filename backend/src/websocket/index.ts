@@ -11,7 +11,7 @@ let io: Server;
 export function initializeWebSocket(httpServer: HttpServer) {
   io = new Server(httpServer, {
     cors: {
-      origin: config.frontendUrl,
+      origin: config.allowedOrigins,
       credentials: true,
     },
     pingTimeout: 60_000,
