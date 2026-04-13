@@ -29,20 +29,43 @@ export const registerSchema = z
   });
 
 export const createListingSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(100),
-  description: z.string().max(5000).optional(),
+  title: z.string().min(1, 'Title is required').max(100, 'Title cannot exceed 100 characters'),
+  description: z
+    .string()
+    .max(5000, 'Description cannot exceed 5000 characters')
+    .optional(),
   propertyType: z.enum(['apartment', 'house', 'condo', 'townhouse']),
   address: z.string().min(1, 'Address is required').max(500),
   city: z.string().min(1, 'City is required').max(100),
   state: z.string().max(100).optional(),
   zipCode: z.string().max(20).optional(),
-  bedrooms: z.number().int().min(0),
-  bathrooms: z.number().min(0).optional(),
-  squareFootage: z.number().int().positive().optional(),
-  monthlyRent: z.number().positive('Rent must be greater than 0'),
-  deposit: z.number().positive().optional(),
+  // z.coerce.number() handles string → number conversion from HTML inputs.
+  // For optional fields we use .catch(undefined) so that an empty input ("" → NaN)
+  // is silently treated as absent rather than a validation error.
+  bedrooms: z.coerce.number().int().min(0, 'Bedrooms cannot be negative'),
+  bathrooms: z.coerce.number().min(0).catch(undefined as unknown as number).optional(),
+  squareFootage: z.coerce
+    .number()
+    .int()
+    .positive()
+    .catch(undefined as unknown as number)
+    .optional(),
+  monthlyRent: z.coerce.number().positive('Monthly rent must be greater than 0'),
+  deposit: z.coerce
+    .number()
+    .positive()
+    .catch(undefined as unknown as number)
+    .optional(),
   availableFrom: z.string().optional(),
   amenities: z.array(z.string()).optional(),
+  virtualTourUrl: z
+    .string()
+    .url('Please enter a valid URL')
+    .optional()
+    .or(z.literal('')),
+  leaseDuration: z.string().max(50).optional(),
+  petPolicy: z.enum(['allowed', 'not_allowed', 'case_by_case']).optional(),
+  smokingPolicy: z.enum(['allowed', 'not_allowed']).optional(),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;

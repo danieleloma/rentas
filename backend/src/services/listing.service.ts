@@ -40,6 +40,9 @@ const listingSelect = {
   status: true,
   isFeatured: true,
   virtualTourUrl: true,
+  leaseDuration: true,
+  petPolicy: true,
+  smokingPolicy: true,
   viewsCount: true,
   createdAt: true,
   updatedAt: true,
@@ -143,6 +146,9 @@ export class ListingService {
       availableFrom?: string;
       amenities?: string[];
       virtualTourUrl?: string;
+      leaseDuration?: string;
+      petPolicy?: string;
+      smokingPolicy?: string;
     },
   ) {
     const listing = await prisma.listing.create({
@@ -164,7 +170,10 @@ export class ListingService {
         deposit: data.deposit,
         availableFrom: data.availableFrom ? new Date(data.availableFrom) : undefined,
         amenities: data.amenities || [],
-        virtualTourUrl: data.virtualTourUrl,
+        virtualTourUrl: data.virtualTourUrl || null,
+        leaseDuration: data.leaseDuration,
+        petPolicy: data.petPolicy,
+        smokingPolicy: data.smokingPolicy,
       },
       select: listingSelect,
     });
@@ -223,7 +232,7 @@ export class ListingService {
     ]);
 
     return {
-      data: favorites.map((f) => f.listing),
+      data: favorites.map((f: { listing: unknown }) => f.listing),
       meta: paginationMeta(total, pagination),
     };
   }

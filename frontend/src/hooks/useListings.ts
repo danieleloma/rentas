@@ -5,6 +5,7 @@ import {
   getListingsApi,
   getListingByIdApi,
   createListingApi,
+  uploadListingImageApi,
   toggleFavoriteApi,
 } from '@/lib/api/listings';
 import { useListingStore } from '@/store/listingStore';
@@ -47,7 +48,19 @@ export function useCreateListing() {
   const addToast = useUIStore((s) => s.addToast);
 
   return useMutation({
-    mutationFn: createListingApi,
+    mutationFn: async ({
+      listingData,
+      images,
+    }: {
+      listingData: Record<string, unknown>;
+      images?: File[];
+    }) => {
+      const listing = await createListingApi(listingData);
+      if (images?.length && listing?.id) {
+        await Promise.all(images.map((file) => uploadListingImageApi(listing.id, file)));
+      }
+      return listing;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['listings'] });
       addToast('Listing created successfully', 'success');

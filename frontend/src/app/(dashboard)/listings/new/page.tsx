@@ -22,10 +22,11 @@ export default function NewListingPage() {
       <h1 className="mb-6 text-2xl font-bold text-gray-900">Create New Listing</h1>
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <ListingForm
-          onSubmit={(data) => {
-            createListing.mutate(data as Record<string, unknown>, {
-              onSuccess: () => router.push('/listings'),
-            });
+          onSubmit={(data, images) => {
+            createListing.mutate(
+              { listingData: data as Record<string, unknown>, images },
+              { onSuccess: () => router.push('/listings') },
+            );
           }}
           isLoading={createListing.isPending}
         />

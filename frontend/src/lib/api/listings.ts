@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { Listing, ApiResponse, PaginationMeta } from '@/types';
+import type { Listing, ListingImage, ApiResponse, PaginationMeta } from '@/types';
 import { demoListings } from '@/lib/mock/listings';
 
 interface ListingFilters {
@@ -62,6 +62,23 @@ export async function deleteListingApi(id: string) {
 export async function toggleFavoriteApi(id: string) {
   const { data } = await apiClient.post<ApiResponse<{ favorited: boolean }>>(
     `/listings/${id}/favorite`,
+  );
+  return data.data;
+}
+
+export async function uploadListingImageApi(
+  listingId: string,
+  file: File,
+  isVirtualTour = false,
+): Promise<ListingImage> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('listingId', listingId);
+  if (isVirtualTour) formData.append('isVirtualTour', 'true');
+  const { data } = await apiClient.post<ApiResponse<ListingImage>>(
+    '/upload/listing-image',
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } },
   );
   return data.data;
 }

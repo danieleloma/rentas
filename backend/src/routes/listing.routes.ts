@@ -24,7 +24,10 @@ const createListingSchema = z.object({
   deposit: z.number().positive().optional(),
   availableFrom: z.string().optional(),
   amenities: z.array(z.string()).optional(),
-  virtualTourUrl: z.string().url().optional(),
+  virtualTourUrl: z.string().url().optional().or(z.literal('')),
+  leaseDuration: z.string().max(50).optional(),
+  petPolicy: z.enum(['allowed', 'not_allowed', 'case_by_case']).optional(),
+  smokingPolicy: z.enum(['allowed', 'not_allowed']).optional(),
 });
 
 const updateListingSchema = createListingSchema.partial();
