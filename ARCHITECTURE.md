@@ -1,6 +1,7 @@
 # Rentas - Technical Architecture Document
 
 ## Table of Contents
+
 1. [High-Level Architecture](#1-high-level-architecture)
 2. [System Components](#2-system-components)
 3. [Microservices Design](#3-microservices-design)
@@ -21,6 +22,7 @@
 **Chosen Approach:** Modular Monolith (Phase 1) → Microservices (Phase 2)
 
 **Rationale:**
+
 - Faster MVP development with shared codebase
 - Shared database simplifies transactions
 - Easier debugging and deployment
@@ -147,18 +149,20 @@
 
 ### 2.2 Component Responsibilities
 
-| Component | Responsibility | Public API |
-|-----------|----------------|------------|
-| **AuthService** | User authentication, JWT issuance, password reset | `/api/auth/*` |
-| **ListingService** | CRUD operations for listings, search, favorites | `/api/listings/*` |
-| **MessageService** | Real-time messaging, conversation management | `/api/messages/*`, WebSocket |
-| **VisitService** | Visit scheduling, calendar management | `/api/visits/*` |
-| **ReviewService** | Reviews, ratings, landlord responses | `/api/reviews/*` |
-| **MoverService** | Mover profiles, booking management | `/api/movers/*` |
-| **ReportService** | Listing reports, admin dashboard | `/api/reports/*` |
-| **MapService** | POI data, geocoding, distance calculations | Internal service |
-| **NotificationService** | Push notifications, email, SMS | Internal service |
-| **FileUploadService** | Image upload, S3 management | `/api/upload/*` |
+
+| Component               | Responsibility                                    | Public API                   |
+| ----------------------- | ------------------------------------------------- | ---------------------------- |
+| **AuthService**         | User authentication, JWT issuance, password reset | `/api/auth/`*                |
+| **ListingService**      | CRUD operations for listings, search, favorites   | `/api/listings/`*            |
+| **MessageService**      | Real-time messaging, conversation management      | `/api/messages/`*, WebSocket |
+| **VisitService**        | Visit scheduling, calendar management             | `/api/visits/`*              |
+| **ReviewService**       | Reviews, ratings, landlord responses              | `/api/reviews/`*             |
+| **MoverService**        | Mover profiles, booking management                | `/api/movers/`*              |
+| **ReportService**       | Listing reports, admin dashboard                  | `/api/reports/`*             |
+| **MapService**          | POI data, geocoding, distance calculations        | Internal service             |
+| **NotificationService** | Push notifications, email, SMS                    | Internal service             |
+| **FileUploadService**   | Image upload, S3 management                       | `/api/upload/`*              |
+
 
 ---
 
@@ -219,11 +223,13 @@
 
 ### 3.2 Inter-Service Communication
 
-| Pattern | Use Case | Implementation |
-|---------|----------|----------------|
-| **Request-Response** | CRUD operations | REST over HTTP |
-| **Async Events** | Notifications, analytics | RabbitMQ / Redis Pub-Sub |
-| **Pub-Sub** | Real-time updates | Socket.io with Redis adapter |
+
+| Pattern              | Use Case                 | Implementation               |
+| -------------------- | ------------------------ | ---------------------------- |
+| **Request-Response** | CRUD operations          | REST over HTTP               |
+| **Async Events**     | Notifications, analytics | RabbitMQ / Redis Pub-Sub     |
+| **Pub-Sub**          | Real-time updates        | Socket.io with Redis adapter |
+
 
 ### 3.3 Service Database Schema (Logical)
 
@@ -252,6 +258,7 @@
 ```
 
 **Database Per Service (Future):**
+
 - Auth Service: `rentas_auth` database
 - Listings Service: `rentas_listings` database  
 - Messages Service: `rentas_messages` database
@@ -316,13 +323,15 @@
 
 ### 4.2 Caching Strategy
 
-| Cache Layer | Data | TTL | Invalidation |
-|-------------|------|-----|---------------|
-| **CDN** | Static assets, images | 7 days | Versioned URLs |
-| **API Cache** | Listing search results | 5 min | On write |
-| **Session Cache** | User sessions (Redis) | 24 hrs | Logout/Expiry |
-| **Query Cache** | Frequently accessed listings | 1 hour | On update |
-| **Object Cache** | POI data, map tiles | 24 hours | Daily refresh |
+
+| Cache Layer       | Data                         | TTL      | Invalidation   |
+| ----------------- | ---------------------------- | -------- | -------------- |
+| **CDN**           | Static assets, images        | 7 days   | Versioned URLs |
+| **API Cache**     | Listing search results       | 5 min    | On write       |
+| **Session Cache** | User sessions (Redis)        | 24 hrs   | Logout/Expiry  |
+| **Query Cache**   | Frequently accessed listings | 1 hour   | On update      |
+| **Object Cache**  | POI data, map tiles          | 24 hours | Daily refresh  |
+
 
 ### 4.3 Data Models
 
@@ -420,13 +429,15 @@
 
 ### 5.2 Server Specifications
 
-| Instance | Type | vCPU | RAM | Storage | Purpose |
-|----------|------|------|-----|---------|---------|
-| **App Server** | t3.large | 2 | 8 GB | 100 GB SSD | API + WebSocket |
-| **App Server** | t3.xlarge | 4 | 16 GB | 100 GB SSD | Heavy processing |
-| **Database** | db.t3.medium | 2 | 4 GB | 100 GB SSD | PostgreSQL Primary |
-| **Database Read** | db.t3.small | 1 | 2 GB | 50 GB SSD | Read Replica |
-| **Cache** | cache.t3.micro | 2 | 1 GB | - | Redis |
+
+| Instance          | Type           | vCPU | RAM   | Storage    | Purpose            |
+| ----------------- | -------------- | ---- | ----- | ---------- | ------------------ |
+| **App Server**    | t3.large       | 2    | 8 GB  | 100 GB SSD | API + WebSocket    |
+| **App Server**    | t3.xlarge      | 4    | 16 GB | 100 GB SSD | Heavy processing   |
+| **Database**      | db.t3.medium   | 2    | 4 GB  | 100 GB SSD | PostgreSQL Primary |
+| **Database Read** | db.t3.small    | 1    | 2 GB  | 50 GB SSD  | Read Replica       |
+| **Cache**         | cache.t3.micro | 2    | 1 GB  | -          | Redis              |
+
 
 ### 5.3 Storage Architecture
 
@@ -555,13 +566,15 @@
 
 ### 6.2 Security Groups
 
-| Security Group | Inbound | Outbound | Attached To |
-|----------------|---------|----------|-------------|
-| **ALB-SG** | HTTP(80), HTTPS(443) from 0.0.0.0/0 | All to App-SG | ALB |
-| **App-SG** | HTTP(3000) from ALB-SG | All to DB-SG, Redis-SG, S3 | EC2 Instances |
-| **DB-SG** | PostgreSQL(5432) from App-SG | All to RDS | RDS |
-| **Redis-SG** | Redis(6379) from App-SG | All to ElastiCache | ElastiCache |
-| **Bastion-SG** | SSH(22) from Office IP | All to App-SG | Bastion Host |
+
+| Security Group | Inbound                             | Outbound                   | Attached To   |
+| -------------- | ----------------------------------- | -------------------------- | ------------- |
+| **ALB-SG**     | HTTP(80), HTTPS(443) from 0.0.0.0/0 | All to App-SG              | ALB           |
+| **App-SG**     | HTTP(3000) from ALB-SG              | All to DB-SG, Redis-SG, S3 | EC2 Instances |
+| **DB-SG**      | PostgreSQL(5432) from App-SG        | All to RDS                 | RDS           |
+| **Redis-SG**   | Redis(6379) from App-SG             | All to ElastiCache         | ElastiCache   |
+| **Bastion-SG** | SSH(22) from Office IP              | All to App-SG              | Bastion Host  |
+
 
 ---
 
@@ -663,14 +676,16 @@
 
 ### 7.3 Encryption Strategy
 
-| Data State | Encryption | Algorithm | Key Management |
-|------------|------------|-----------|----------------|
-| **In Transit** | TLS 1.3 | - | Let's Encrypt / ACM |
-| **At Rest (DB)** | AES-256 | CBC | AWS KMS |
-| **At Rest (S3)** | AES-256 | - | S3 Server-Side |
-| **Passwords** | bcrypt | Cost 12 | - |
-| **API Keys** | AES-256 | GCM | AWS Secrets Manager |
-| **Messages** | AES-256 | - | Per-conversation key |
+
+| Data State       | Encryption | Algorithm | Key Management       |
+| ---------------- | ---------- | --------- | -------------------- |
+| **In Transit**   | TLS 1.3    | -         | Let's Encrypt / ACM  |
+| **At Rest (DB)** | AES-256    | CBC       | AWS KMS              |
+| **At Rest (S3)** | AES-256    | -         | S3 Server-Side       |
+| **Passwords**    | bcrypt     | Cost 12   | -                    |
+| **API Keys**     | AES-256    | GCM       | AWS Secrets Manager  |
+| **Messages**     | AES-256    | -         | Per-conversation key |
+
 
 ---
 
@@ -728,25 +743,29 @@
 
 ### 8.2 Integration Details
 
-| Service | Integration Type | Protocol | Data Format | Rate Limit |
-|---------|-----------------|----------|-------------|------------|
-| **Mapbox** | REST API | HTTPS | JSON | 100k/day |
-| **Google Places** | REST API | HTTPS | JSON | 1k/day |
-| **AWS S3** | SDK | HTTPS | Binary | Unlimited |
-| **Firebase FCM** | HTTP/2 | HTTPS | JSON | 240k/hour |
-| **SendGrid** | SMTP/HTTP | HTTPS | JSON | 100/sec |
-| **Stripe** | SDK | HTTPS | JSON | Per endpoint |
-| **Twilio** | REST API | HTTPS | JSON | Per endpoint |
+
+| Service           | Integration Type | Protocol | Data Format | Rate Limit   |
+| ----------------- | ---------------- | -------- | ----------- | ------------ |
+| **Mapbox**        | REST API         | HTTPS    | JSON        | 100k/day     |
+| **Google Places** | REST API         | HTTPS    | JSON        | 1k/day       |
+| **AWS S3**        | SDK              | HTTPS    | Binary      | Unlimited    |
+| **Firebase FCM**  | HTTP/2           | HTTPS    | JSON        | 240k/hour    |
+| **SendGrid**      | SMTP/HTTP        | HTTPS    | JSON        | 100/sec      |
+| **Stripe**        | SDK              | HTTPS    | JSON        | Per endpoint |
+| **Twilio**        | REST API         | HTTPS    | JSON        | Per endpoint |
+
 
 ### 8.3 Webhook Configuration
 
-| Event | Trigger | Consumer | Retry Policy |
-|-------|---------|----------|---------------|
-| `listing.created` | New listing | Analytics | 3x exponential |
-| `message.received` | New message | Notification | 3x exponential |
-| `visit.approved` | Visit approved | Calendar Sync | 3x exponential |
-| `booking.confirmed` | Mover confirmed | Email Service | 3x exponential |
+
+| Event               | Trigger          | Consumer       | Retry Policy   |
+| ------------------- | ---------------- | -------------- | -------------- |
+| `listing.created`   | New listing      | Analytics      | 3x exponential |
+| `message.received`  | New message      | Notification   | 3x exponential |
+| `visit.approved`    | Visit approved   | Calendar Sync  | 3x exponential |
+| `booking.confirmed` | Mover confirmed  | Email Service  | 3x exponential |
 | `payment.succeeded` | Payment complete | Revenue System | 3x exponential |
+
 
 ---
 
@@ -882,18 +901,20 @@ services:
 
 ### 10.2 Key Metrics
 
-| Category | Metric | Threshold | Alert |
-|----------|--------|-----------|-------|
-| **Infrastructure** | CPU Usage | > 80% | Warning |
-| **Infrastructure** | Memory Usage | > 85% | Warning |
-| **Infrastructure** | Disk Usage | > 90% | Critical |
-| **Database** | Query Latency (p95) | > 500ms | Warning |
-| **Database** | Connection Count | > 80% max | Warning |
-| **API** | Response Time (p95) | > 1000ms | Warning |
-| **API** | Error Rate | > 1% | Warning |
-| **API** | HTTP 5xx Count | > 10/min | Critical |
-| **Application** | Active Users | Drop > 50% | Warning |
-| **Application** | Message Delivery | < 99% | Warning |
+
+| Category           | Metric              | Threshold  | Alert    |
+| ------------------ | ------------------- | ---------- | -------- |
+| **Infrastructure** | CPU Usage           | > 80%      | Warning  |
+| **Infrastructure** | Memory Usage        | > 85%      | Warning  |
+| **Infrastructure** | Disk Usage          | > 90%      | Critical |
+| **Database**       | Query Latency (p95) | > 500ms    | Warning  |
+| **Database**       | Connection Count    | > 80% max  | Warning  |
+| **API**            | Response Time (p95) | > 1000ms   | Warning  |
+| **API**            | Error Rate          | > 1%       | Warning  |
+| **API**            | HTTP 5xx Count      | > 10/min   | Critical |
+| **Application**    | Active Users        | Drop > 50% | Warning  |
+| **Application**    | Message Delivery    | < 99%      | Warning  |
+
 
 ### 10.3 Logging Strategy
 
@@ -1001,19 +1022,21 @@ services:
 
 ### 11.2 WebSocket Events
 
-| Event | Direction | Payload |
-|-------|-----------|---------|
-| `connect` | Client → Server | `{ token: string }` |
-| `disconnect` | Server → Client | `{ reason: string }` |
-| `message:new` | Bidirectional | `{ message: Message }` |
-| `message:read` | Client → Server | `{ messageId: string }` |
-| `call:initiate` | Bidirectional | `{ callId, userId, type }` |
-| `call:offer` | Bidirectional | `{ sdp: string }` |
-| `call:answer` | Bidirectional | `{ sdp: string }` |
-| `call:ice` | Bidirectional | `{ candidate: string }` |
-| `call:end` | Bidirectional | `{ callId: string }` |
-| `typing:start` | Client → Server | `{ conversationId: string }` |
+
+| Event              | Direction       | Payload                          |
+| ------------------ | --------------- | -------------------------------- |
+| `connect`          | Client → Server | `{ token: string }`              |
+| `disconnect`       | Server → Client | `{ reason: string }`             |
+| `message:new`      | Bidirectional   | `{ message: Message }`           |
+| `message:read`     | Client → Server | `{ messageId: string }`          |
+| `call:initiate`    | Bidirectional   | `{ callId, userId, type }`       |
+| `call:offer`       | Bidirectional   | `{ sdp: string }`                |
+| `call:answer`      | Bidirectional   | `{ sdp: string }`                |
+| `call:ice`         | Bidirectional   | `{ candidate: string }`          |
+| `call:end`         | Bidirectional   | `{ callId: string }`             |
+| `typing:start`     | Client → Server | `{ conversationId: string }`     |
 | `notification:new` | Server → Client | `{ notification: Notification }` |
+
 
 ---
 
@@ -1136,9 +1159,11 @@ services:
 
 ## 13. Document History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2024-01-15 | Architecture Team | Initial document |
+
+| Version | Date       | Author            | Changes          |
+| ------- | ---------- | ----------------- | ---------------- |
+| 1.0     | 2024-01-15 | Architecture Team | Initial document |
+
 
 ---
 

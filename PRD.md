@@ -13,31 +13,35 @@
 
 ## 2. User Roles & Permissions
 
-| Role | Permissions | Access Level |
-|------|-------------|--------------|
-| **Renter/Buyer** | Search, view listings, virtual tour, message, schedule visits, book movers, leave reviews, report listings | Standard |
-| **Landlord** | Create/edit listings, manage availability, message renters, approve/reject visits, respond to reviews | Creator |
-| **Mover** | Create profile, manage services, receive bookings, update availability | Service Provider |
-| **Admin** | Full access, user management, listing moderation, report handling, analytics | Admin |
+
+| Role             | Permissions                                                                                                | Access Level     |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- | ---------------- |
+| **Renter/Buyer** | Search, view listings, virtual tour, message, schedule visits, book movers, leave reviews, report listings | Standard         |
+| **Landlord**     | Create/edit listings, manage availability, message renters, approve/reject visits, respond to reviews      | Creator          |
+| **Mover**        | Create profile, manage services, receive bookings, update availability                                     | Service Provider |
+| **Admin**        | Full access, user management, listing moderation, report handling, analytics                               | Admin            |
+
 
 ### 2.1 Permission Matrix
 
-| Feature | Renter | Landlord | Mover | Admin |
-|---------|--------|----------|-------|-------|
-| View Listings | ✓ | ✓ | ✓ | ✓ |
-| Create Listing | ✗ | ✓ | ✗ | ✓ |
-| Edit Own Listing | ✗ | ✓ | ✗ | ✓ |
-| Delete Own Listing | ✗ | ✓ | ✗ | ✓ |
-| Message Users | ✓ | ✓ | ✓ | ✓ |
-| Schedule Visits | ✓ | ✗ | ✗ | ✓ |
-| Approve Visits | ✗ | ✓ | ✗ | ✓ |
-| Leave Reviews | ✓ | ✗ | ✗ | ✓ |
-| Respond to Reviews | ✗ | ✓ | ✗ | ✓ |
-| Report Listings | ✓ | ✓ | ✓ | ✓ |
-| Manage Reports | ✗ | ✗ | ✗ | ✓ |
-| Book Mover | ✓ | ✗ | ✗ | ✗ |
-| Manage Mover Profile | ✗ | ✗ | ✓ | ✓ |
-| View Analytics | ✗ | Limited | ✗ | ✓ |
+
+| Feature              | Renter | Landlord | Mover | Admin |
+| -------------------- | ------ | -------- | ----- | ----- |
+| View Listings        | ✓      | ✓        | ✓     | ✓     |
+| Create Listing       | ✗      | ✓        | ✗     | ✓     |
+| Edit Own Listing     | ✗      | ✓        | ✗     | ✓     |
+| Delete Own Listing   | ✗      | ✓        | ✗     | ✓     |
+| Message Users        | ✓      | ✓        | ✓     | ✓     |
+| Schedule Visits      | ✓      | ✗        | ✗     | ✓     |
+| Approve Visits       | ✗      | ✓        | ✗     | ✓     |
+| Leave Reviews        | ✓      | ✗        | ✗     | ✓     |
+| Respond to Reviews   | ✗      | ✓        | ✗     | ✓     |
+| Report Listings      | ✓      | ✓        | ✓     | ✓     |
+| Manage Reports       | ✗      | ✗        | ✗     | ✓     |
+| Book Mover           | ✓      | ✗        | ✗     | ✗     |
+| Manage Mover Profile | ✗      | ✗        | ✓     | ✓     |
+| View Analytics       | ✗      | Limited  | ✗     | ✓     |
+
 
 ---
 
@@ -48,6 +52,7 @@
 **FR-001:** Users can browse rental listings on the home page with infinite scroll (20 items per page).
 
 **FR-002:** Users can filter listings by:
+
 - Price range (min/max)
 - Location (city, neighborhood, zip code)
 - Bedrooms (studio, 1, 2, 3, 4+)
@@ -64,6 +69,7 @@
 **FR-005:** Users can share listings via generated deep link or social media.
 
 **FR-006:** Landlords can create listings with:
+
 - Title (max 100 chars)
 - Description (max 5000 chars)
 - Property type
@@ -83,6 +89,7 @@
 **FR-008:** Listings must support 360° panoramic virtual tours uploaded as equirectangular JPEG images (min 4K resolution recommended).
 
 **FR-009:** Virtual tour viewer must support:
+
 - Mouse/touch drag to pan
 - Zoom in/out (pinch or scroll)
 - Auto-rotate option
@@ -101,12 +108,14 @@
 **FR-013:** Interactive map displaying listing marker using Mapbox/Google Maps.
 
 **FR-014:** POI overlay layer must show:
+
 - **Markets:** Grocery stores, convenience stores within 2km radius
 - **Schools:** Primary, secondary, universities within 5km radius
 - **Hospitals:** Hospitals, clinics, pharmacies within 5km radius
 - **Transit:** Bus stops, metro stations within 1km radius
 
 **FR-015:** Each POI marker must display on tap:
+
 - Name
 - Distance from listing (walking/driving)
 - Rating (if available)
@@ -122,6 +131,7 @@
 **FR-018:** Real-time messaging using WebSocket (Socket.io) with fallback to long polling.
 
 **FR-019:** Message types supported:
+
 - Text (max 2000 chars)
 - Image (max 10MB)
 - Document (PDF, max 10MB)
@@ -132,6 +142,7 @@
 **FR-021:** VoIP calling using WebRTC with TURN server for NAT traversal.
 
 **FR-022:** Push notifications via FCM for:
+
 - New messages
 - Visit request status changes
 - Mover booking updates
@@ -146,6 +157,7 @@
 **FR-025:** Landlords set weekly availability schedule (time slots, recurring).
 
 **FR-026:** Renters request visit via:
+
 - Select date from calendar
 - Select time slot
 - Add note (optional)
@@ -154,6 +166,7 @@
 **FR-027:** Visit states: Pending → Approved/Rejected → Completed/Cancelled.
 
 **FR-028:** Automated reminders:
+
 - Email 24 hours before
 - Push notification 2 hours before
 
@@ -166,6 +179,7 @@
 **FR-031:** Only verified tenants (with recorded move-in date) can leave reviews.
 
 **FR-032:** Review includes:
+
 - Overall rating (1-5 stars, required)
 - Category ratings:
   - Neighborhood (1-5)
@@ -188,6 +202,7 @@
 **FR-036:** Report button accessible from listing detail page.
 
 **FR-037:** Report categories:
+
 - Scam/Fraud
 - Listing not available
 - Inaccurate information
@@ -196,6 +211,7 @@
 - Other
 
 **FR-038:** Report submission requires:
+
 - Category selection
 - Description (max 500 chars, optional)
 - Evidence (images, screenshots, optional)
@@ -203,6 +219,7 @@
 **FR-039:** Reporter receives confirmation with ticket ID.
 
 **FR-040:** Admin dashboard displays all reports with status:
+
 - New
 - Under Review
 - Action Taken ( landlord notified / listing removed )
@@ -213,6 +230,7 @@
 ### 3.8 Moving Services Integration
 
 **FR-042:** Movers can create profiles with:
+
 - Company name
 - Logo
 - Description
@@ -225,6 +243,7 @@
 - Photos of team/vehicles
 
 **FR-043:** Renter search movers by:
+
 - Service area
 - Move date
 - Price range
@@ -232,6 +251,7 @@
 - Rating (minimum)
 
 **FR-044:** Mover booking flow:
+
 1. Select mover from search results
 2. Select move date and time window
 3. Select services needed
@@ -243,6 +263,7 @@
 **FR-045:** Booking states: Requested → Confirmed → In Progress → Completed → Reviewed.
 
 **FR-046:** Post-booking, renter can:
+
 - Message mover directly
 - View mover contact details
 - Cancel with policy (24hr notice for full refund)
@@ -283,52 +304,59 @@
 
 ### 4.2 Tech Stack
 
-| Layer | Technology | Version |
-|-------|------------|---------|
-| **Frontend Framework** | React | 18.x |
-| **Meta-framework** | Next.js | 14.x |
-| **Language** | TypeScript | 5.x |
-| **Styling** | Tailwind CSS | 3.x |
-| **State Management** | Zustand | 4.x |
-| **API Client** | TanStack Query | 5.x |
-| **Maps** | Mapbox GL JS | 3.x |
-| **Virtual Tour** | Pannellum | 2.5.x |
-| **Real-time** | Socket.io Client | 4.x |
-| **PWA** | Workbox | 7.x |
 
-| Layer | Technology | Version |
-|-------|------------|---------|
-| **Backend Framework** | Node.js + Express | 20.x |
-| **Language** | TypeScript | 5.x |
-| **Database** | PostgreSQL | 15.x |
-| **ORM** | Prisma | 5.x |
-| **Cache** | Redis | 7.x |
-| **Real-time** | Socket.io | 4.x |
-| **Authentication** | JWT + Passport.js | - |
-| **File Storage** | AWS S3 | - |
-| **Email** | SendGrid / AWS SES | - |
-| **Push Notifications** | Firebase Cloud Messaging | - |
-| **Search** | Elasticsearch | 8.x |
-| **Video Calling** | WebRTC (simple-peer) | - |
+| Layer                  | Technology       | Version |
+| ---------------------- | ---------------- | ------- |
+| **Frontend Framework** | React            | 18.x    |
+| **Meta-framework**     | Next.js          | 14.x    |
+| **Language**           | TypeScript       | 5.x     |
+| **Styling**            | Tailwind CSS     | 3.x     |
+| **State Management**   | Zustand          | 4.x     |
+| **API Client**         | TanStack Query   | 5.x     |
+| **Maps**               | Mapbox GL JS     | 3.x     |
+| **Virtual Tour**       | Pannellum        | 2.5.x   |
+| **Real-time**          | Socket.io Client | 4.x     |
+| **PWA**                | Workbox          | 7.x     |
+
+
+
+| Layer                  | Technology               | Version |
+| ---------------------- | ------------------------ | ------- |
+| **Backend Framework**  | Node.js + Express        | 20.x    |
+| **Language**           | TypeScript               | 5.x     |
+| **Database**           | PostgreSQL               | 15.x    |
+| **ORM**                | Prisma                   | 5.x     |
+| **Cache**              | Redis                    | 7.x     |
+| **Real-time**          | Socket.io                | 4.x     |
+| **Authentication**     | JWT + Passport.js        | -       |
+| **File Storage**       | AWS S3                   | -       |
+| **Email**              | SendGrid / AWS SES       | -       |
+| **Push Notifications** | Firebase Cloud Messaging | -       |
+| **Search**             | Elasticsearch            | 8.x     |
+| **Video Calling**      | WebRTC (simple-peer)     | -       |
+
 
 ### 4.3 Infrastructure
 
-| Component | Service | Configuration |
-|-----------|---------|---------------|
-| **Compute** | AWS EC2 / DigitalOcean Droplet | t3.large (2 vCPU, 8GB) |
-| **Database** | AWS RDS PostgreSQL | db.t3.medium |
-| **Cache** | AWS ElastiCache Redis | cache.t3.micro |
-| **CDN** | Cloudflare | Enterprise plan |
-| **Storage** | AWS S3 | Standard tier |
-| **Maps** | Mapbox | Enterprise plan |
-| **Email** | AWS SES | - |
-| **SSL** | Let's Encrypt (auto-renew) | - |
-| **Monitoring** | Sentry + Datadog | - |
-| **CI/CD** | GitHub Actions | - |
+
+| Component      | Service                        | Configuration          |
+| -------------- | ------------------------------ | ---------------------- |
+| **Compute**    | AWS EC2 / DigitalOcean Droplet | t3.large (2 vCPU, 8GB) |
+| **Database**   | AWS RDS PostgreSQL             | db.t3.medium           |
+| **Cache**      | AWS ElastiCache Redis          | cache.t3.micro         |
+| **CDN**        | Cloudflare                     | Enterprise plan        |
+| **Storage**    | AWS S3                         | Standard tier          |
+| **Maps**       | Mapbox                         | Enterprise plan        |
+| **Email**      | AWS SES                        | -                      |
+| **SSL**        | Let's Encrypt (auto-renew)     | -                      |
+| **Monitoring** | Sentry + Datadog               | -                      |
+| **CI/CD**      | GitHub Actions                 | -                      |
+
 
 ### 4.4 Database Schema
 
 #### 4.4.1 Users Table
+
 ```sql
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -353,6 +381,7 @@ CREATE INDEX idx_users_role ON users(role);
 ```
 
 #### 4.4.2 Listings Table
+
 ```sql
 CREATE TABLE listings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -390,6 +419,7 @@ CREATE INDEX idx_listings_price ON listings(monthly_rent);
 ```
 
 #### 4.4.3 Listing Images Table
+
 ```sql
 CREATE TABLE listing_images (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -403,6 +433,7 @@ CREATE TABLE listing_images (
 ```
 
 #### 4.4.4 Messages Table
+
 ```sql
 CREATE TABLE conversations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -430,6 +461,7 @@ CREATE INDEX idx_messages_created ON messages(created_at);
 ```
 
 #### 4.4.5 Visits Table
+
 ```sql
 CREATE TABLE visits (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -453,6 +485,7 @@ CREATE INDEX idx_visits_status ON visits(status);
 ```
 
 #### 4.4.6 Reviews Table
+
 ```sql
 CREATE TABLE reviews (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -477,6 +510,7 @@ CREATE INDEX idx_reviews_rating ON reviews(overall_rating);
 ```
 
 #### 4.4.7 Reports Table
+
 ```sql
 CREATE TABLE reports (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -497,6 +531,7 @@ CREATE INDEX idx_reports_status ON reports(status);
 ```
 
 #### 4.4.8 Movers Table
+
 ```sql
 CREATE TABLE movers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -544,94 +579,119 @@ CREATE INDEX idx_mover_bookings_status ON mover_bookings(status);
 ### 4.5 API Endpoints
 
 #### 4.5.1 Authentication
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | /api/auth/register | Register new user | Public |
-| POST | /api/auth/login | Login user | Public |
-| POST | /api/auth/logout | Logout user | JWT |
-| POST | /api/auth/refresh | Refresh access token | JWT |
-| POST | /api/auth/forgot-password | Request password reset | Public |
-| POST | /api/auth/reset-password | Reset password | Public |
-| GET | /api/auth/me | Get current user | JWT |
+
+
+| Method | Endpoint                  | Description            | Auth   |
+| ------ | ------------------------- | ---------------------- | ------ |
+| POST   | /api/auth/register        | Register new user      | Public |
+| POST   | /api/auth/login           | Login user             | Public |
+| POST   | /api/auth/logout          | Logout user            | JWT    |
+| POST   | /api/auth/refresh         | Refresh access token   | JWT    |
+| POST   | /api/auth/forgot-password | Request password reset | Public |
+| POST   | /api/auth/reset-password  | Reset password         | Public |
+| GET    | /api/auth/me              | Get current user       | JWT    |
+
 
 #### 4.5.2 Listings
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | /api/listings | List listings (with filters) | Public |
-| GET | /api/listings/:id | Get listing details | Public |
-| POST | /api/listings | Create listing | Landlord |
-| PUT | /api/listings/:id | Update listing | Landlord |
-| DELETE | /api/listings/:id | Delete listing | Landlord |
-| POST | /api/listings/:id/favorite | Toggle favorite | JWT |
-| GET | /api/listings/favorites | Get favorite listings | JWT |
+
+
+| Method | Endpoint                   | Description                  | Auth     |
+| ------ | -------------------------- | ---------------------------- | -------- |
+| GET    | /api/listings              | List listings (with filters) | Public   |
+| GET    | /api/listings/:id          | Get listing details          | Public   |
+| POST   | /api/listings              | Create listing               | Landlord |
+| PUT    | /api/listings/:id          | Update listing               | Landlord |
+| DELETE | /api/listings/:id          | Delete listing               | Landlord |
+| POST   | /api/listings/:id/favorite | Toggle favorite              | JWT      |
+| GET    | /api/listings/favorites    | Get favorite listings        | JWT      |
+
 
 #### 4.5.3 Messages
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | /api/conversations | List conversations | JWT |
-| GET | /api/conversations/:id/messages | Get messages | JWT |
-| POST | /api/conversations/:id/messages | Send message | JWT |
-| POST | /api/calls/initiate | Initiate call | JWT |
+
+
+| Method | Endpoint                        | Description        | Auth |
+| ------ | ------------------------------- | ------------------ | ---- |
+| GET    | /api/conversations              | List conversations | JWT  |
+| GET    | /api/conversations/:id/messages | Get messages       | JWT  |
+| POST   | /api/conversations/:id/messages | Send message       | JWT  |
+| POST   | /api/calls/initiate             | Initiate call      | JWT  |
+
 
 #### 4.5.4 Visits
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | /api/visits | List visits | JWT |
-| POST | /api/visits | Request visit | JWT |
-| PUT | /api/visits/:id | Update visit | JWT |
-| PUT | /api/visits/:id/status | Update visit status | Landlord |
+
+
+| Method | Endpoint               | Description         | Auth     |
+| ------ | ---------------------- | ------------------- | -------- |
+| GET    | /api/visits            | List visits         | JWT      |
+| POST   | /api/visits            | Request visit       | JWT      |
+| PUT    | /api/visits/:id        | Update visit        | JWT      |
+| PUT    | /api/visits/:id/status | Update visit status | Landlord |
+
 
 #### 4.5.5 Reviews
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | /api/listings/:id/reviews | Get listing reviews | Public |
-| POST | /api/listings/:id/reviews | Create review | JWT |
-| PUT | /api/reviews/:id | Update review | JWT |
-| POST | /api/reviews/:id/respond | Landlord response | Landlord |
+
+
+| Method | Endpoint                  | Description         | Auth     |
+| ------ | ------------------------- | ------------------- | -------- |
+| GET    | /api/listings/:id/reviews | Get listing reviews | Public   |
+| POST   | /api/listings/:id/reviews | Create review       | JWT      |
+| PUT    | /api/reviews/:id          | Update review       | JWT      |
+| POST   | /api/reviews/:id/respond  | Landlord response   | Landlord |
+
 
 #### 4.5.6 Reports
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | /api/listings/:id/report | Report listing | JWT |
-| GET | /api/reports | List reports (admin) | Admin |
+
+
+| Method | Endpoint                 | Description          | Auth  |
+| ------ | ------------------------ | -------------------- | ----- |
+| POST   | /api/listings/:id/report | Report listing       | JWT   |
+| GET    | /api/reports             | List reports (admin) | Admin |
+
 
 #### 4.5.7 Movers
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | /api/movers | Search movers | JWT |
-| GET | /api/movers/:id | Get mover profile | JWT |
-| POST | /api/movers | Create mover profile | Mover |
-| PUT | /api/movers/:id | Update mover profile | Mover |
-| POST | /api/movers/:id/book | Book mover | JWT |
-| GET | /api/bookings | List bookings | JWT |
-| PUT | /api/bookings/:id | Update booking | JWT |
+
+
+| Method | Endpoint             | Description          | Auth  |
+| ------ | -------------------- | -------------------- | ----- |
+| GET    | /api/movers          | Search movers        | JWT   |
+| GET    | /api/movers/:id      | Get mover profile    | JWT   |
+| POST   | /api/movers          | Create mover profile | Mover |
+| PUT    | /api/movers/:id      | Update mover profile | Mover |
+| POST   | /api/movers/:id/book | Book mover           | JWT   |
+| GET    | /api/bookings        | List bookings        | JWT   |
+| PUT    | /api/bookings/:id    | Update booking       | JWT   |
+
 
 ### 4.6 Security Requirements
 
-| Requirement | Implementation |
-|-------------|----------------|
-| **Data in Transit** | TLS 1.3 |
-| **Data at Rest** | AES-256 encryption for messages, reviews |
-| **Password Storage** | bcrypt with cost factor 12 |
-| **Authentication** | JWT with access (15min) + refresh (7 days) tokens |
-| **Rate Limiting** | 100 req/min per IP, 1000 req/min authenticated |
-| **CORS** | Whitelist only trusted domains |
-| **CSRF** | Same-site cookies, CSRF tokens |
-| **Input Validation** | Zod schema validation |
-| **SQL Injection** | Parameterized queries via Prisma |
-| **XSS** | Content Security Policy, sanitized output |
-| **File Upload** | Max 10MB, allowed types: jpg, png, pdf |
+
+| Requirement          | Implementation                                    |
+| -------------------- | ------------------------------------------------- |
+| **Data in Transit**  | TLS 1.3                                           |
+| **Data at Rest**     | AES-256 encryption for messages, reviews          |
+| **Password Storage** | bcrypt with cost factor 12                        |
+| **Authentication**   | JWT with access (15min) + refresh (7 days) tokens |
+| **Rate Limiting**    | 100 req/min per IP, 1000 req/min authenticated    |
+| **CORS**             | Whitelist only trusted domains                    |
+| **CSRF**             | Same-site cookies, CSRF tokens                    |
+| **Input Validation** | Zod schema validation                             |
+| **SQL Injection**    | Parameterized queries via Prisma                  |
+| **XSS**              | Content Security Policy, sanitized output         |
+| **File Upload**      | Max 10MB, allowed types: jpg, png, pdf            |
+
 
 ### 4.7 Third-Party Integrations
 
-| Service | Purpose | API |
-|---------|---------|-----|
-| **Mapbox** | Maps, geocoding, POI data | Mapbox GL JS, Geocoding API |
-| **AWS S3** | File storage (images, documents) | AWS SDK |
-| **Firebase** | Push notifications | FCM HTTP API |
-| **SendGrid** | Transactional emails | SendGrid API |
-| **Twilio** | SMS verification (optional) | Twilio API |
-| **Stripe** | Payment processing (Phase 2) | Stripe SDK |
+
+| Service      | Purpose                          | API                         |
+| ------------ | -------------------------------- | --------------------------- |
+| **Mapbox**   | Maps, geocoding, POI data        | Mapbox GL JS, Geocoding API |
+| **AWS S3**   | File storage (images, documents) | AWS SDK                     |
+| **Firebase** | Push notifications               | FCM HTTP API                |
+| **SendGrid** | Transactional emails             | SendGrid API                |
+| **Twilio**   | SMS verification (optional)      | Twilio API                  |
+| **Stripe**   | Payment processing (Phase 2)     | Stripe SDK                  |
+
 
 ### 4.8 File Structure (Frontend)
 
@@ -685,6 +745,7 @@ CREATE INDEX idx_mover_bookings_status ON mover_bookings(status);
 ## 5. User Flows
 
 ### 5.1 Renter Journey
+
 ```
 1. Open App → Landing Page
 2. Browse listings / Use search/filters
@@ -701,6 +762,7 @@ CREATE INDEX idx_mover_bookings_status ON mover_bookings(status);
 ```
 
 ### 5.2 Landlord Journey
+
 ```
 1. Register → Select "Landlord" role
 2. Create First Listing
@@ -717,6 +779,7 @@ CREATE INDEX idx_mover_bookings_status ON mover_bookings(status);
 ```
 
 ### 5.3 Mover Journey
+
 ```
 1. Register → Select "Mover" role
 2. Create Mover Profile
@@ -731,19 +794,22 @@ CREATE INDEX idx_mover_bookings_status ON mover_bookings(status);
 
 ## 6. Non-Functional Requirements
 
-| Requirement | Target |
-|-------------|--------|
-| **Page Load Time** | < 3 seconds on 3G |
-| **Time to Interactive** | < 5 seconds |
-| **API Response Time** | < 200ms (p95) |
-| **WebSocket Latency** | < 100ms |
-| **Virtual Tour Load** | < 4 seconds (4G) |
-| **Uptime SLA** | 99.5% |
-| **Concurrent Users** | 10,000 |
-| **Push Notification Delivery** | < 5 seconds |
-| **Search Response** | < 500ms |
+
+| Requirement                    | Target            |
+| ------------------------------ | ----------------- |
+| **Page Load Time**             | < 3 seconds on 3G |
+| **Time to Interactive**        | < 5 seconds       |
+| **API Response Time**          | < 200ms (p95)     |
+| **WebSocket Latency**          | < 100ms           |
+| **Virtual Tour Load**          | < 4 seconds (4G)  |
+| **Uptime SLA**                 | 99.5%             |
+| **Concurrent Users**           | 10,000            |
+| **Push Notification Delivery** | < 5 seconds       |
+| **Search Response**            | < 500ms           |
+
 
 ### 6.1 Browser Support
+
 - Chrome 90+
 - Firefox 88+
 - Safari 14+
@@ -751,6 +817,7 @@ CREATE INDEX idx_mover_bookings_status ON mover_bookings(status);
 - Mobile browsers (iOS Safari, Chrome Android)
 
 ### 6.2 Accessibility
+
 - WCAG 2.1 AA compliance
 - Keyboard navigation support
 - Screen reader compatible
@@ -775,60 +842,74 @@ CREATE INDEX idx_mover_bookings_status ON mover_bookings(status);
 
 ## 8. Success Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|--------------|
-| Monthly Active Users | 50,000 | Analytics |
-| Total Listings | 10,000 | Database |
-| Virtual Tour Adoption | 40% of listings | Event tracking |
-| Message Delivery Rate | 99% | Message logs |
-| Visit Scheduling Rate | 25% of inquiries | Event tracking |
-| Mover Booking Rate | 10% of lease signups | Booking data |
-| Report Resolution Time | < 48 hours | Ticket system |
-| User Satisfaction (NPS) | > 50 | In-app survey |
-| App Store Rating | > 4.5 | App stores |
+
+| Metric                  | Target               | Measurement    |
+| ----------------------- | -------------------- | -------------- |
+| Monthly Active Users    | 50,000               | Analytics      |
+| Total Listings          | 10,000               | Database       |
+| Virtual Tour Adoption   | 40% of listings      | Event tracking |
+| Message Delivery Rate   | 99%                  | Message logs   |
+| Visit Scheduling Rate   | 25% of inquiries     | Event tracking |
+| Mover Booking Rate      | 10% of lease signups | Booking data   |
+| Report Resolution Time  | < 48 hours           | Ticket system  |
+| User Satisfaction (NPS) | > 50                 | In-app survey  |
+| App Store Rating        | > 4.5                | App stores     |
+
 
 ---
 
 ## 9. Phased Rollout Plan
 
 ### Phase 1 - MVP (Weeks 1-8)
+
 **Goal:** Core rental discovery and communication
 
-| Feature | Deliverable |
-|---------|-------------|
-| User Auth | Sign up, login, profile |
-| Listings | CRUD, search, filters, favorites |
-| Virtual Tour | 360° viewer, room navigation |
-| Messaging | Real-time chat |
-| Visit Scheduling | Calendar, request/approve flow |
+
+| Feature          | Deliverable                      |
+| ---------------- | -------------------------------- |
+| User Auth        | Sign up, login, profile          |
+| Listings         | CRUD, search, filters, favorites |
+| Virtual Tour     | 360° viewer, room navigation     |
+| Messaging        | Real-time chat                   |
+| Visit Scheduling | Calendar, request/approve flow   |
+
 
 ### Phase 2 - Growth (Weeks 9-14)
+
 **Goal:** Trust signals and safety
 
-| Feature | Deliverable |
-|---------|-------------|
-| POI/Map | Market, schools, hospitals overlay |
-| Reviews | Tenant ratings, verified badges |
-| Reports | Report flow, admin dashboard |
-| Push Notifications | FCM integration |
+
+| Feature            | Deliverable                        |
+| ------------------ | ---------------------------------- |
+| POI/Map            | Market, schools, hospitals overlay |
+| Reviews            | Tenant ratings, verified badges    |
+| Reports            | Report flow, admin dashboard       |
+| Push Notifications | FCM integration                    |
+
 
 ### Phase 3 - Expansion (Weeks 15-20)
+
 **Goal:** Moving services and advanced communication
 
-| Feature | Deliverable |
-|---------|-------------|
+
+| Feature         | Deliverable                     |
+| --------------- | ------------------------------- |
 | Moving Services | Mover profiles, search, booking |
-| VoIP Calling | WebRTC in-app calls |
-| Payment | Stripe integration for movers |
+| VoIP Calling    | WebRTC in-app calls             |
+| Payment         | Stripe integration for movers   |
+
 
 ---
 
 ## 10. Risks & Mitigation
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Low virtual tour adoption | Medium | Make tours mandatory for featured listings |
-| Spam/fake listings | High | Manual moderation queue, landlord verification |
-| VoIP call quality | Medium | Fallback to phone call option |
-| Map API costs | Medium | Cache POI data, use OpenStreetMap fallback |
-| User data breach | Critical | Encryption at rest, penetration testing |
+
+| Risk                      | Impact   | Mitigation                                     |
+| ------------------------- | -------- | ---------------------------------------------- |
+| Low virtual tour adoption | Medium   | Make tours mandatory for featured listings     |
+| Spam/fake listings        | High     | Manual moderation queue, landlord verification |
+| VoIP call quality         | Medium   | Fallback to phone call option                  |
+| Map API costs             | Medium   | Cache POI data, use OpenStreetMap fallback     |
+| User data breach          | Critical | Encryption at rest, penetration testing        |
+
+

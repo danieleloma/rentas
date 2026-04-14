@@ -30,7 +30,7 @@ export class ListingController {
 
   static async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const listing = await ListingService.getById(req.params.id);
+      const listing = await ListingService.getById(String(req.params.id));
       return ApiResponse.success(res, listing);
     } catch (err) {
       next(err);
@@ -48,7 +48,7 @@ export class ListingController {
 
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
-      const listing = await ListingService.update(req.params.id, req.user!.userId, req.body);
+      const listing = await ListingService.update(String(req.params.id), req.user!.userId, req.body);
       return ApiResponse.success(res, listing);
     } catch (err) {
       next(err);
@@ -57,7 +57,7 @@ export class ListingController {
 
   static async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      await ListingService.delete(req.params.id, req.user!.userId);
+      await ListingService.delete(String(req.params.id), req.user!.userId);
       return ApiResponse.noContent(res);
     } catch (err) {
       next(err);
@@ -66,7 +66,7 @@ export class ListingController {
 
   static async toggleFavorite(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await ListingService.toggleFavorite(req.user!.userId, req.params.id);
+      const result = await ListingService.toggleFavorite(req.user!.userId, String(req.params.id));
       return ApiResponse.success(res, result);
     } catch (err) {
       next(err);

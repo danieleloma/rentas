@@ -64,8 +64,14 @@ export const createListingSchema = z.object({
     .optional()
     .or(z.literal('')),
   leaseDuration: z.string().max(50).optional(),
-  petPolicy: z.enum(['allowed', 'not_allowed', 'case_by_case']).optional(),
-  smokingPolicy: z.enum(['allowed', 'not_allowed']).optional(),
+  petPolicy: z.preprocess(
+    (v) => (v === '' ? undefined : v),
+    z.enum(['allowed', 'not_allowed', 'case_by_case']).optional(),
+  ),
+  smokingPolicy: z.preprocess(
+    (v) => (v === '' ? undefined : v),
+    z.enum(['allowed', 'not_allowed']).optional(),
+  ),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;

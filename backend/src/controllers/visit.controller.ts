@@ -29,7 +29,7 @@ export class VisitController {
   static async updateStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const visit = await VisitService.updateStatus(
-        req.params.id,
+        String(req.params.id),
         req.user!.userId,
         req.body.status,
       );
@@ -41,7 +41,7 @@ export class VisitController {
 
   static async cancel(req: Request, res: Response, next: NextFunction) {
     try {
-      const visit = await VisitService.cancel(req.params.id, req.user!.userId);
+      const visit = await VisitService.cancel(String(req.params.id), req.user!.userId);
       return ApiResponse.success(res, visit);
     } catch (err) {
       next(err);

@@ -18,7 +18,7 @@ export class MessageController {
     try {
       const pagination = parsePagination(req.query as Record<string, unknown>);
       const result = await MessageService.getMessages(
-        req.params.id,
+        String(req.params.id),
         req.user!.userId,
         pagination,
       );
@@ -31,7 +31,7 @@ export class MessageController {
   static async sendMessage(req: Request, res: Response, next: NextFunction) {
     try {
       const message = await MessageService.sendMessage({
-        conversationId: req.params.id,
+        conversationId: String(req.params.id),
         senderId: req.user!.userId,
         ...req.body,
       });
