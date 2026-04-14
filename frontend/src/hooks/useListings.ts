@@ -58,7 +58,13 @@ export function useCreateListing() {
     }) => {
       const listing = await createListingApi(listingData);
       if (images?.length && listing?.id) {
-        await Promise.all(images.map((file) => uploadListingImageApi(listing.id, file)));
+        const results = await Promise.allSettled(
+          images.map((file) => uploadListingImageApi(listing.id, file)),
+        );
+        const failed = results.filter((r) => r.status === 'rejected').length;
+        if (failed > 0) {
+          addToast(`Listing created, but ${failed} photo(s) failed to upload`, 'error');
+        }
       }
       return listing;
     },
@@ -72,6 +78,8 @@ export function useCreateListing() {
         const data = err.response?.data as { error?: { message?: string } } | undefined;
         const msg = data?.error?.message;
         if (typeof msg === 'string' && msg.length > 0) message = msg;
+        else if (!err.response) message = 'Cannot reach the server. Check your connection.';
+        else if (err.code === 'ECONNABORTED') message = 'Request timed out. Please try again.';
       }
       addToast(message, 'error');
     },

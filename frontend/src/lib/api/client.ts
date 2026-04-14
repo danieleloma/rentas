@@ -6,6 +6,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 export const apiClient = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
+  timeout: 30000,
 });
 
 apiClient.interceptors.request.use((config) => {
@@ -37,6 +38,7 @@ apiClient.interceptors.response.use(
         } catch {
           useAuthStore.getState().logout();
           window.location.href = '/login';
+          return Promise.reject(error);
         }
       }
     }
