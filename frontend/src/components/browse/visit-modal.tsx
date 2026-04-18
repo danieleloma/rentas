@@ -26,12 +26,6 @@ export function VisitModal({ listingId, listingTitle, onClose }: VisitModalProps
   const [viewingType, setViewingType] = useState<'in_person' | 'video_call'>('in_person');
   const [note, setNote] = useState('');
 
-  // Redirect unauthenticated visitors to login
-  if (!user) {
-    router.push('/login');
-    return null;
-  }
-
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().split('T')[0];
@@ -39,6 +33,7 @@ export function VisitModal({ listingId, listingTitle, onClose }: VisitModalProps
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!date) return;
+    if (!user) { router.push('/login'); return; }
     createVisit.mutate(
       {
         listingId,
@@ -149,7 +144,7 @@ export function VisitModal({ listingId, listingTitle, onClose }: VisitModalProps
             disabled={!date || createVisit.isPending}
             className="w-full bg-stone-900 py-3.5 text-[13px] font-semibold uppercase tracking-[0.2em] text-[#f7f6f4] transition hover:bg-stone-800 disabled:opacity-40"
           >
-            {createVisit.isPending ? 'Sending request…' : 'Request visit'}
+            {createVisit.isPending ? 'Sending request…' : user ? 'Request visit' : 'Sign in to request'}
           </button>
         </form>
       </div>

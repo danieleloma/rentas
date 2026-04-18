@@ -1,19 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
 import { Cormorant_Garamond, Manrope } from 'next/font/google';
 import { MapPin, Bed, Bath, Maximize, Calendar, ArrowRight, Play, Star, MessageSquare } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { formatCurrency, formatDate } from '@/lib/utils/format';
-import { getOrCreateConversationApi } from '@/lib/api/messages';
 import { getListingReviewsApi } from '@/lib/api/reviews';
-import { useAuthStore } from '@/store/authStore';
 import { VisitModal } from './visit-modal';
 import { VirtualTourModal } from './virtual-tour-modal';
 import { ListingMap } from './listing-map';
+import { ContactModal } from './contact-modal';
 import type { Listing } from '@/types';
 
 const display = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500', '600'] });
@@ -33,12 +30,9 @@ function StarRating({ value }: { value: number }) {
 }
 
 export function BrowseListingDetail({ listing }: { listing: Listing }) {
-  const router = useRouter();
-  const user = useAuthStore((s) => s.user);
-
   const [showVisitModal, setShowVisitModal] = useState(false);
   const [showTourModal, setShowTourModal] = useState(false);
-  const [contactLoading, setContactLoading] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
 
   const { data: reviewsData } = useQuery({
     queryKey: ['reviews', listing.id],
@@ -52,21 +46,6 @@ export function BrowseListingDetail({ listing }: { listing: Listing }) {
     ? reviews.reduce((s, r) => s + r.overallRating, 0) / reviews.length
     : null;
 
-  async function handleContact() {
-    if (!user) { router.push('/login'); return; }
-    setContactLoading(true);
-    try {
-      const conversationId = await getOrCreateConversationApi(listing.id, listing.landlord.id);
-      router.push(`/messages/${conversationId}`);
-    } catch {
-      setContactLoading(false);
-    }
-  }
-
-  function handleSchedule() {
-    if (!user) { router.push('/login'); return; }
-    setShowVisitModal(true);
-  }
 
   return (
     <div className={sans.className}>
@@ -344,32 +323,21 @@ export function BrowseListingDetail({ listing }: { listing: Listing }) {
             <div className="space-y-3 pt-1">
               <button
                 type="button"
-                onClick={handleContact}
-                disabled={contactLoading}
-                className="flex w-full items-center justify-center gap-2 bg-stone-900 px-6 py-3.5 text-[13px] font-semibold uppercase tracking-[0.2em] text-[#f7f6f4] transition hover:bg-stone-800 disabled:opacity-60"
+                onClick={() => setShowContactModal(true)}
+                className="flex w-full items-center justify-center gap-2 bg-stone-900 px-6 py-3.5 text-[13px] font-semibold uppercase tracking-[0.2em] text-[#f7f6f4] transition hover:bg-stone-800"
               >
                 <MessageSquare className="h-3.5 w-3.5" />
-                {contactLoading ? 'Opening…' : 'Contact landlord'}
+                Contact landlord
               </button>
               <button
                 type="button"
-                onClick={handleSchedule}
+                onClick={() => setShowVisitModal(true)}
                 className="flex w-full items-center justify-center gap-2 border border-stone-300 px-6 py-3.5 text-[13px] font-semibold uppercase tracking-[0.2em] text-stone-700 transition hover:border-stone-800 hover:text-stone-900"
               >
                 <Calendar className="h-3.5 w-3.5" />
                 Schedule a visit
               </button>
             </div>
-
-            {/* Sign-in nudge for guests */}
-            {!user && (
-              <p className="text-center text-[12px] text-stone-400">
-                <Link href="/login" className="underline underline-offset-2 hover:text-stone-700">
-                  Sign in
-                </Link>{' '}
-                to contact or schedule
-              </p>
-            )}
           </div>
 
           {/* Virtual tour shortcut */}
@@ -388,6 +356,16 @@ export function BrowseListingDetail({ listing }: { listing: Listing }) {
       </div>
 
       {/* ── Modals ────────────────────────────────────────────── */}
+      {showContactModal && (
+        <ContactModal
+          listingId={listing.id}
+          listingTitle={listing.title}
+          landlordId={listing.landlord.id}
+          landlordName={`${listing.landlord.firstName} ${listing.landlord.lastName}`}
+          landlordPhone={listing.landlord.phone}
+          onClose={() => setShowContactModal(false)}
+        />
+      )}
       {showVisitModal && (
         <VisitModal
           listingId={listing.id}

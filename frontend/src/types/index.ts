@@ -47,6 +47,7 @@ export interface Listing {
     firstName: string;
     lastName: string;
     avatarUrl?: string;
+    phone?: string;
   };
   images: ListingImage[];
 }

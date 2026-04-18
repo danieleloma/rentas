@@ -4,13 +4,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { Calendar, Home, LogIn, LogOut, Menu, MessageSquare, User, X } from 'lucide-react';
+import { Calendar, Home, Inbox, LogIn, LogOut, Menu, MessageSquare, User, X } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils/cn';
 import { ThemeToggle } from './theme-toggle';
 
 const links = [
   { href: '/listings', label: 'Listings', icon: Home },
+  { href: '/inquiries', label: 'Inquiries', icon: Inbox },
   { href: '/messages', label: 'Messages', icon: MessageSquare },
   { href: '/visits', label: 'Visits', icon: Calendar },
   { href: '/profile', label: 'Profile', icon: User },

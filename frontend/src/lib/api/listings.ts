@@ -7,7 +7,7 @@ const LISTING_QUERY = `
   latitude, longitude, bedrooms, bathrooms, square_footage, monthly_rent,
   deposit, available_from, amenities, status, is_featured, virtual_tour_url,
   lease_duration, pet_policy, smoking_policy, views_count, created_at, updated_at,
-  landlord:users!landlord_id ( id, first_name, last_name, avatar_url ),
+  landlord:users!landlord_id ( id, first_name, last_name, avatar_url, phone ),
   images:listing_images ( id, url, thumbnail_url, position, is_virtual_tour, created_at )
 ` as const;
 
@@ -43,6 +43,7 @@ function mapListing(row: any): Listing {
           firstName: row.landlord.first_name,
           lastName: row.landlord.last_name,
           avatarUrl: row.landlord.avatar_url ?? undefined,
+          phone: row.landlord.phone ?? undefined,
         }
       : { id: '', firstName: '', lastName: '' },
     images: (row.images ?? [])
