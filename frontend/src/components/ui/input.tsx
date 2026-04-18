@@ -1,90 +1,41 @@
-'use client';
+import * as React from "react"
+import { Input as InputPrimitive } from "@base-ui/react/input"
 
-import * as React from 'react';
-import { cn } from '@/lib/utils/cn';
+import { cn } from "@/lib/utils"
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends React.ComponentProps<"input"> {
   label?: string;
   error?: string;
-  leftIcon?: React.ReactNode;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  (
-    {
-      className,
-      id,
-      label,
-      error,
-      leftIcon,
-      disabled,
-      required,
-      ...props
-    },
-    ref,
-  ) => {
-    const autoId = React.useId();
-    const inputId = id ?? autoId;
-    const describedBy = error ? `${inputId}-error` : undefined;
+function Input({ className, type, label, error, id, ...props }: InputProps) {
+  const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
+  return (
+    <div className="w-full space-y-1.5">
+      {label && (
+        <label
+          htmlFor={inputId}
+          className="flex text-sm font-medium leading-none select-none"
+        >
+          {label}
+        </label>
+      )}
+      <InputPrimitive
+        id={inputId}
+        type={type}
+        data-slot="input"
+        aria-invalid={error ? true : undefined}
+        className={cn(
+          "h-9 w-full min-w-0 rounded-lg border border-input bg-transparent px-3 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+          className
+        )}
+        {...props}
+      />
+      {error && (
+        <p className="text-xs text-destructive">{error}</p>
+      )}
+    </div>
+  )
+}
 
-    return (
-      <div className="w-full">
-        {label ? (
-          <label
-            htmlFor={inputId}
-            className="mb-1.5 block text-sm font-medium text-gray-700"
-          >
-            {label}
-            {required ? (
-              <span className="text-red-600" aria-hidden>
-                {' '}
-                *
-              </span>
-            ) : null}
-          </label>
-        ) : null}
-        <div className="relative">
-          {leftIcon ? (
-            <span
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 [&_svg]:size-[1.125rem]"
-              aria-hidden
-            >
-              {leftIcon}
-            </span>
-          ) : null}
-          <input
-            ref={ref}
-            id={inputId}
-            disabled={disabled}
-            required={required}
-            aria-invalid={error ? true : undefined}
-            aria-describedby={describedBy}
-            className={cn(
-              'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm transition-colors',
-              'placeholder:text-gray-400',
-              'focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/20',
-              'disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500',
-              leftIcon && 'pl-10',
-              error &&
-                'border-red-500 focus:border-red-500 focus:ring-red-500/20',
-              className,
-            )}
-            {...props}
-          />
-        </div>
-        {error ? (
-          <p
-            id={`${inputId}-error`}
-            className="mt-1.5 text-sm text-red-600"
-            role="alert"
-          >
-            {error}
-          </p>
-        ) : null}
-      </div>
-    );
-  },
-);
-
-Input.displayName = 'Input';
+export { Input }

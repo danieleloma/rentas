@@ -14,13 +14,13 @@ export interface VisitCardProps {
   userRole: UserRole;
 }
 
-function statusVariant(status: string): 'default' | 'success' | 'warning' | 'error' | 'info' {
+function statusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
   const s = status.toLowerCase();
-  if (s === 'pending') return 'warning';
-  if (s === 'approved') return 'success';
-  if (s === 'rejected') return 'error';
-  if (s === 'completed') return 'info';
-  return 'default';
+  if (s === 'pending') return 'secondary';
+  if (s === 'approved') return 'default';
+  if (s === 'rejected') return 'destructive';
+  if (s === 'completed') return 'outline';
+  return 'secondary';
 }
 
 export function VisitCard({ visit, onApprove, onReject, onCancel, userRole }: VisitCardProps) {
@@ -38,7 +38,7 @@ export function VisitCard({ visit, onApprove, onReject, onCancel, userRole }: Vi
         <div className="flex flex-wrap items-start justify-between gap-2">
           <h3 className="font-semibold text-gray-900">{visit.listing.title}</h3>
           <div className="flex flex-wrap gap-2">
-            <Badge variant="info" className="capitalize">
+            <Badge variant="outline" className="capitalize">
               {visit.viewingType.replace(/-/g, ' ')}
             </Badge>
             <Badge variant={statusVariant(visit.status)} className="capitalize">
@@ -61,7 +61,7 @@ export function VisitCard({ visit, onApprove, onReject, onCancel, userRole }: Vi
             <>
               <Button
                 type="button"
-                variant="primary"
+                variant="default"
                 size="sm"
                 onClick={() => onApprove?.(visit.id)}
               >
@@ -69,7 +69,7 @@ export function VisitCard({ visit, onApprove, onReject, onCancel, userRole }: Vi
               </Button>
               <Button
                 type="button"
-                variant="danger"
+                variant="destructive"
                 size="sm"
                 onClick={() => onReject?.(visit.id)}
               >

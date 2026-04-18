@@ -61,7 +61,7 @@ export function ListingGrid({
       </div>
       {hasMore && (
         <div className="mt-8 flex justify-center">
-          <Button variant="outline" onClick={onLoadMore} isLoading={isFetchingMore}>
+          <Button variant="outline" onClick={onLoadMore} disabled={isFetchingMore}>
             Load More
           </Button>
         </div>

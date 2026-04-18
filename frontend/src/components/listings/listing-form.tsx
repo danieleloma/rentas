@@ -395,7 +395,7 @@ export function ListingForm({ onSubmit, isLoading }: ListingFormProps) {
       </section>
 
       {/* ── Submit ────────────────────────────────────────────── */}
-      <Button type="submit" isLoading={isLoading} className="w-full">
+      <Button type="submit" disabled={isLoading} className="w-full">
         {isLoading ? 'Creating listing…' : 'Create Listing'}
       </Button>
     </form>

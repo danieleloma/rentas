@@ -40,7 +40,7 @@ export function ListingDetail({ listing }: ListingDetailProps) {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="default">{listing.propertyType}</Badge>
-            {listing.isFeatured && <Badge variant="info">Featured</Badge>}
+            {listing.isFeatured && <Badge variant="secondary">Featured</Badge>}
           </div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl">{listing.title}</h1>
           <p className="mt-1 flex items-center gap-1 text-gray-500 dark:text-gray-400">
@@ -101,7 +101,7 @@ export function ListingDetail({ listing }: ListingDetailProps) {
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Amenities</h2>
           <div className="mt-3 flex flex-wrap gap-2">
             {listing.amenities.map((amenity) => (
-              <Badge key={amenity} variant="info">
+              <Badge key={amenity} variant="outline">
                 {amenity}
               </Badge>
             ))}

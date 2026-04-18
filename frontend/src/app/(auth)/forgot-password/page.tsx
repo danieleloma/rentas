@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 
 const forgotSchema = z.object({
@@ -56,14 +57,17 @@ export default function ForgotPasswordPage() {
         })}
         noValidate
       >
-        <Input
-          label="Email"
-          type="email"
-          autoComplete="email"
-          required
-          error={errors.email?.message}
-          {...register('email')}
-        />
+        <div className="space-y-2">
+          <Label htmlFor="fp-email">Email</Label>
+          <Input
+            id="fp-email"
+            type="email"
+            autoComplete="email"
+            required
+            error={errors.email?.message}
+            {...register('email')}
+          />
+        </div>
         <Button type="submit" className="h-10 w-full">
           Send reset link
         </Button>
