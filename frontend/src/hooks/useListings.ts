@@ -1,7 +1,6 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import {
   getListingsApi,
   getListingByIdApi,
@@ -73,14 +72,7 @@ export function useCreateListing() {
       addToast('Listing created successfully', 'success');
     },
     onError: (err) => {
-      let message = 'Failed to create listing';
-      if (isAxiosError(err)) {
-        const data = err.response?.data as { error?: { message?: string } } | undefined;
-        const msg = data?.error?.message;
-        if (typeof msg === 'string' && msg.length > 0) message = msg;
-        else if (!err.response) message = 'Cannot reach the server. Check your connection.';
-        else if (err.code === 'ECONNABORTED') message = 'Request timed out. Please try again.';
-      }
+      const message = err instanceof Error ? err.message : 'Failed to create listing';
       addToast(message, 'error');
     },
   });

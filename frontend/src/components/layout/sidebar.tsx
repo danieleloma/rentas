@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { Calendar, Home, LogOut, Menu, MessageSquare, User, X } from 'lucide-react';
+import { Calendar, Home, LogIn, LogOut, Menu, MessageSquare, User, X } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils/cn';
 import { ThemeToggle } from './theme-toggle';
@@ -113,17 +113,28 @@ export function Sidebar() {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              logout();
-              setOpen(false);
-            }}
-            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
-            <LogOut className="h-4 w-4" />
-            Log out
-          </button>
+          {user ? (
+            <button
+              type="button"
+              onClick={() => {
+                logout();
+                setOpen(false);
+              }}
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+            >
+              <LogOut className="h-4 w-4" />
+              Log out
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+            >
+              <LogIn className="h-4 w-4" />
+              Sign in
+            </Link>
+          )}
         </div>
       </aside>
     </>

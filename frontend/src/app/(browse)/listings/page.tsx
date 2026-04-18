@@ -43,7 +43,7 @@ export default function ListingsPage() {
       <ListingGrid
         listings={listings}
         isLoading={isLoading}
-        onFavorite={(id) => toggleFavorite.mutate(id)}
+        onFavorite={user ? (id) => toggleFavorite.mutate(id) : undefined}
         hasMore={hasNextPage}
         onLoadMore={() => fetchNextPage()}
         isFetchingMore={isFetchingNextPage}

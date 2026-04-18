@@ -6,12 +6,9 @@ import type { User } from '@/types';
 
 interface AuthState {
   user: User | null;
-  accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
-  setAuth: (user: User, accessToken: string, refreshToken: string) => void;
-  setTokens: (accessToken: string, refreshToken: string) => void;
   setUser: (user: User) => void;
+  setAuthenticated: (value: boolean) => void;
   logout: () => void;
 }
 
@@ -19,32 +16,15 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      accessToken: null,
-      refreshToken: null,
       isAuthenticated: false,
-
-      setAuth: (user, accessToken, refreshToken) =>
-        set({ user, accessToken, refreshToken, isAuthenticated: true }),
-
-      setTokens: (accessToken, refreshToken) =>
-        set({ accessToken, refreshToken }),
-
-      setUser: (user) => set({ user }),
-
-      logout: () =>
-        set({
-          user: null,
-          accessToken: null,
-          refreshToken: null,
-          isAuthenticated: false,
-        }),
+      setUser: (user) => set({ user, isAuthenticated: true }),
+      setAuthenticated: (value) => set({ isAuthenticated: value }),
+      logout: () => set({ user: null, isAuthenticated: false }),
     }),
     {
       name: 'rentas-auth',
       partialize: (state) => ({
         user: state.user,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
     },
