@@ -13,13 +13,13 @@ import { ContactModal } from './contact-modal';
 import { ListingGallery } from './listing-gallery';
 import type { Listing } from '@/types';
 
+const display = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500', '600'] });
+const sans = Manrope({ subsets: ['latin'], weight: ['400', '500', '600'] });
+
 function maskPhone(phone: string) {
   if (phone.length <= 5) return '*'.repeat(phone.length);
   return phone.slice(0, -5) + '*****';
 }
-
-const display = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500', '600'] });
-const sans = Manrope({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 function StarRating({ value }: { value: number }) {
   return (

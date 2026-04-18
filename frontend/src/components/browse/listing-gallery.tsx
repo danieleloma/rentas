@@ -3,7 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { X, ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { Manrope } from 'next/font/google';
 import type { ListingImage } from '@/types';
+
+const sans = Manrope({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 interface ListingGalleryProps {
   images: ListingImage[];
@@ -106,7 +109,7 @@ export function ListingGallery({ images, title, virtualTourUrl, onTourClick }: L
 
       {/* ── Lightbox ────────────────────────────────────────────── */}
       {lightboxIndex !== null && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-stone-950/95 backdrop-blur-sm">
+        <div className={`${sans.className} fixed inset-0 z-50 flex flex-col bg-stone-950/95 backdrop-blur-sm`}>
           {/* Top bar */}
           <div className="flex items-center justify-between px-5 py-4">
             <span className="text-[12px] font-medium text-stone-400">
