@@ -68,7 +68,7 @@ export function ListingGallery({ images, title, virtualTourUrl, onTourClick }: L
 
         {/* Horizontal thumbnail strip */}
         {images.length > 1 && (
-          <div className="mt-1.5 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="mt-1.5 flex gap-1.5 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {images.map((img, idx) => (
               <button
                 key={img.id}
@@ -154,7 +154,7 @@ export function ListingGallery({ images, title, virtualTourUrl, onTourClick }: L
           </div>
 
           {/* Thumbnail strip */}
-          <div className="flex justify-center gap-1.5 overflow-x-auto px-4 py-4 scrollbar-none">
+          <div className="flex justify-center gap-1.5 overflow-x-auto px-4 py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {images.map((img, idx) => (
               <button
                 key={img.id}
