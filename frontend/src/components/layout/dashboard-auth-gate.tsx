@@ -18,7 +18,6 @@ export function DashboardAuthGate({ children, allowGuests = false }: DashboardAu
   const { setUser, logout, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
-    // Resolve the current session on mount
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
         try {
@@ -33,7 +32,6 @@ export function DashboardAuthGate({ children, allowGuests = false }: DashboardAu
       setReady(true);
     });
 
-    // Keep the store in sync when the auth state changes (sign-in / sign-out / token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT' || !session) {
         logout();

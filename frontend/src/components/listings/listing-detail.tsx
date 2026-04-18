@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Bed, Bath, Maximize, MapPin, Calendar } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils/format';
 import { Badge } from '@/components/ui/badge';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import type { Listing } from '@/types';
 
@@ -112,11 +112,10 @@ export function ListingDetail({ listing }: ListingDetailProps) {
       <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Listed by</h2>
         <div className="flex items-center gap-4">
-          <Avatar
-            name={`${listing.landlord.firstName} ${listing.landlord.lastName}`}
-            src={listing.landlord.avatarUrl}
-            size="lg"
-          />
+          <Avatar className="size-14">
+            <AvatarImage src={listing.landlord.avatarUrl ?? undefined} alt={`${listing.landlord.firstName} ${listing.landlord.lastName}`} />
+            <AvatarFallback>{`${listing.landlord.firstName[0] ?? ''}${listing.landlord.lastName[0] ?? ''}`.toUpperCase()}</AvatarFallback>
+          </Avatar>
           <div>
             <p className="font-medium text-gray-900 dark:text-gray-100">
               {listing.landlord.firstName} {listing.landlord.lastName}

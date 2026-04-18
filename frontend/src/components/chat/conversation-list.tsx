@@ -1,7 +1,7 @@
 'use client';
 
 import type { Conversation } from '@/types';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatRelativeTime } from '@/lib/utils/format';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils/cn';
@@ -46,12 +46,10 @@ export function ConversationList({ conversations, activeId, onSelect }: Conversa
                 isActive && 'bg-gray-100 hover:bg-gray-100',
               )}
             >
-              <Avatar
-                src={other.avatarUrl}
-                name={name || 'User'}
-                size="md"
-                className="shrink-0"
-              />
+              <Avatar className="size-10 shrink-0">
+                <AvatarImage src={other.avatarUrl ?? undefined} alt={name || 'User'} />
+                <AvatarFallback>{(name || 'U').slice(0, 2).toUpperCase()}</AvatarFallback>
+              </Avatar>
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
                   <p className="truncate font-medium text-gray-900">{name}</p>

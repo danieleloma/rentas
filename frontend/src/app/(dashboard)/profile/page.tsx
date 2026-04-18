@@ -5,7 +5,7 @@ import {
   CardContent,
   CardHeader,
 } from '@/components/ui/card';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { formatDate } from '@/lib/utils/format';
@@ -40,12 +40,10 @@ export default function ProfilePage() {
 
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row flex-wrap items-center gap-4 pb-4 sm:items-start">
-          <Avatar
-            name={displayName}
-            src={user.avatarUrl}
-            size="lg"
-            className="ring-2 ring-white shadow-md"
-          />
+          <Avatar className="size-14 ring-2 ring-white shadow-md">
+            <AvatarImage src={user.avatarUrl ?? undefined} alt={displayName} />
+            <AvatarFallback>{displayName.slice(0, 2).toUpperCase()}</AvatarFallback>
+          </Avatar>
           <div className="min-w-0 flex-1 space-y-1">
             <p className="truncate text-lg font-semibold text-gray-900">
               {displayName}
