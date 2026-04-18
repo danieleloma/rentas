@@ -24,6 +24,8 @@ export function useListings() {
         minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
         maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
         bedrooms: filters.bedrooms ? Number(filters.bedrooms) : undefined,
+        bathrooms: filters.bathrooms ? Number(filters.bathrooms) : undefined,
+        amenities: filters.amenities.length ? filters.amenities : undefined,
         keyword: filters.keyword || undefined,
       }),
     getNextPageParam: (lastPage) => {

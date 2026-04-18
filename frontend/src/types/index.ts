@@ -130,6 +130,7 @@ export interface Review {
   responseAt?: string;
   isVerified: boolean;
   createdAt: string;
+  renter?: UserSummary;
 }
 
 export interface Mover {

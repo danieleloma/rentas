@@ -65,6 +65,8 @@ interface ListingFilters {
   minPrice?: number;
   maxPrice?: number;
   bedrooms?: number;
+  bathrooms?: number;
+  amenities?: string[];
   keyword?: string;
 }
 
@@ -85,8 +87,12 @@ export async function getListingsApi(filters: ListingFilters = {}) {
     if (filters.city) query = query.ilike('city', `%${filters.city}%`);
     if (filters.propertyType) query = query.eq('property_type', filters.propertyType);
     if (filters.bedrooms) query = query.eq('bedrooms', filters.bedrooms);
+    if (filters.bathrooms) query = query.gte('bathrooms', filters.bathrooms);
     if (filters.minPrice) query = query.gte('monthly_rent', filters.minPrice);
     if (filters.maxPrice) query = query.lte('monthly_rent', filters.maxPrice);
+    if (filters.amenities?.length) {
+      query = query.contains('amenities', filters.amenities);
+    }
     if (filters.keyword) {
       query = query.or(
         `title.ilike.%${filters.keyword}%,description.ilike.%${filters.keyword}%,address.ilike.%${filters.keyword}%`,

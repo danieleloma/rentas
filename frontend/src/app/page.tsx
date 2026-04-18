@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Cormorant_Garamond, Manrope } from 'next/font/google';
+import { Play, MapPin, MessageSquare, Star, Calendar } from 'lucide-react';
 import { FeaturedListingsSection } from '@/components/home/featured-listings-section';
 
 const HERO_IMAGE =
@@ -38,6 +39,151 @@ const pillars = [
     body: 'Read and leave tenant reviews, and book vetted moving help when you are ready to make the place yours.',
   },
 ];
+
+// Mini UI preview components for each feature pillar
+function TourPreview() {
+  return (
+    <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-800 flex items-center justify-center select-none">
+      <Image
+        src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=60"
+        alt="Virtual tour preview"
+        fill
+        className="object-cover opacity-60"
+        sizes="(max-width: 768px) 100vw, 50vw"
+        unoptimized
+      />
+      <div className="relative z-10 flex flex-col items-center gap-3">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/40 bg-white/10 backdrop-blur">
+          <Play className="h-6 w-6 fill-white text-white ml-0.5" />
+        </div>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80">360° Tour</p>
+      </div>
+      <div className="absolute bottom-4 left-4 right-4 flex gap-2">
+        {['Living room', 'Kitchen', 'Bedroom'].map((room) => (
+          <span key={room} className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] text-white/80 backdrop-blur">
+            {room}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MapPreview() {
+  return (
+    <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100 select-none">
+      {/* Stylised map base */}
+      <div className="absolute inset-0 bg-[#e8e0d5]">
+        <div className="absolute left-1/3 top-0 bottom-0 w-5 bg-[#f0e8dc]" />
+        <div className="absolute top-2/5 left-0 right-0 h-4 bg-[#f0e8dc]" />
+        <div className="absolute left-1/5 top-0 bottom-0 w-2 bg-[#d4c9bb]" />
+      </div>
+      {/* POI chips */}
+      {[
+        { label: 'Grocery', color: 'bg-green-700', x: '20%', y: '30%' },
+        { label: 'School', color: 'bg-blue-700', x: '55%', y: '55%' },
+        { label: 'Transit', color: 'bg-orange-600', x: '65%', y: '25%' },
+        { label: 'Hospital', color: 'bg-red-700', x: '30%', y: '65%' },
+      ].map(({ label, color, x, y }) => (
+        <div key={label} className="absolute flex items-center gap-1" style={{ left: x, top: y }}>
+          <div className={`h-2 w-2 rounded-full ${color}`} />
+          <span className="rounded bg-white px-1.5 py-0.5 text-[9px] font-semibold text-stone-700 shadow-sm">{label}</span>
+        </div>
+      ))}
+      {/* Listing pin */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full">
+        <div className="flex flex-col items-center">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-900 shadow-md">
+            <MapPin className="h-4 w-4 fill-white text-white" />
+          </div>
+          <div className="h-2 w-0.5 bg-stone-900" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ChatPreview() {
+  return (
+    <div className="aspect-[4/3] w-full bg-white border border-stone-100 flex flex-col select-none overflow-hidden">
+      <div className="border-b border-stone-100 px-4 py-3 flex items-center gap-2">
+        <div className="h-7 w-7 rounded-full bg-stone-200" />
+        <div>
+          <div className="h-2.5 w-24 rounded bg-stone-200" />
+          <div className="mt-1 h-2 w-16 rounded bg-stone-100" />
+        </div>
+      </div>
+      <div className="flex-1 space-y-3 p-4">
+        <div className="flex justify-end">
+          <div className="max-w-[70%] rounded-2xl rounded-tr-sm bg-stone-900 px-3 py-2 text-[11px] text-white">
+            Is it still available for next month?
+          </div>
+        </div>
+        <div className="flex justify-start">
+          <div className="max-w-[70%] rounded-2xl rounded-tl-sm bg-stone-100 px-3 py-2 text-[11px] text-stone-800">
+            Yes! I&apos;d love to schedule a showing.
+          </div>
+        </div>
+        <div className="flex justify-end">
+          <div className="max-w-[70%] rounded-2xl rounded-tr-sm bg-stone-900 px-3 py-2 text-[11px] text-white">
+            Great, how about Thursday at 2pm?
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-stone-100 flex items-center gap-2 px-4 py-2.5">
+        <div className="flex-1 rounded-full bg-stone-50 border border-stone-200 px-3 py-1.5 text-[11px] text-stone-400">
+          Type a message…
+        </div>
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-stone-900">
+          <MessageSquare className="h-3.5 w-3.5 text-white" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReviewsPreview() {
+  const stars = [5, 4, 5];
+  return (
+    <div className="aspect-[4/3] w-full bg-white border border-stone-100 p-5 flex flex-col justify-between select-none overflow-hidden">
+      <div>
+        <div className="flex items-end gap-2 mb-4">
+          <p className="text-4xl font-light text-stone-900">4.8</p>
+          <div className="mb-1">
+            <div className="flex gap-0.5 mb-1">
+              {[1,2,3,4,5].map((i) => (
+                <Star key={i} className="h-4 w-4 fill-stone-700 text-stone-700" />
+              ))}
+            </div>
+            <p className="text-[11px] text-stone-400">24 verified reviews</p>
+          </div>
+        </div>
+        <div className="space-y-3">
+          {stars.map((rating, i) => (
+            <div key={i} className="border-t border-stone-50 pt-3">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="h-2 w-20 rounded bg-stone-100" />
+                <div className="flex gap-0.5">
+                  {[1,2,3,4,5].map((s) => (
+                    <Star key={s} className={`h-3 w-3 ${s <= rating ? 'fill-stone-600 text-stone-600' : 'text-stone-200'}`} />
+                  ))}
+                </div>
+              </div>
+              <div className="h-2 w-full rounded bg-stone-50" />
+              <div className="mt-1 h-2 w-3/4 rounded bg-stone-50" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex items-center gap-2 mt-3">
+        <Calendar className="h-3.5 w-3.5 text-stone-400" />
+        <span className="text-[11px] text-stone-400">Book a mover for your move-in date</span>
+      </div>
+    </div>
+  );
+}
+
+const pillarPreviews = [TourPreview, MapPreview, ChatPreview, ReviewsPreview];
 
 const offerings = [
   { name: 'Smart search & filters', role: 'Listings' },
@@ -160,30 +306,32 @@ export default function HomePage() {
             </h2>
 
             <div className="mt-16 space-y-24 md:space-y-32">
-              {pillars.map((item, i) => (
-                <div
-                  key={item.label}
-                  className={`grid gap-10 md:grid-cols-2 md:items-center md:gap-16 ${
-                    i % 2 === 1 ? 'md:[&>div:first-child]:order-2' : ''
-                  }`}
-                >
+              {pillars.map((item, i) => {
+                const Preview = pillarPreviews[i];
+                return (
                   <div
-                    className="aspect-[4/3] w-full bg-stone-200 bg-[linear-gradient(135deg,rgba(168,162,158,0.35)_0%,transparent_50%,rgba(120,113,108,0.2)_100%)]"
-                    aria-hidden
-                  />
-                  <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-stone-500">
-                      {item.label}
-                    </p>
-                    <h3
-                      className={`mt-4 text-2xl font-normal leading-snug text-stone-900 sm:text-3xl ${display.className}`}
-                    >
-                      {item.title}
-                    </h3>
-                    <p className="mt-5 text-[15px] leading-relaxed text-stone-600">{item.body}</p>
+                    key={item.label}
+                    className={`grid gap-10 md:grid-cols-2 md:items-center md:gap-16 ${
+                      i % 2 === 1 ? 'md:[&>div:first-child]:order-2' : ''
+                    }`}
+                  >
+                    <div className="overflow-hidden shadow-sm">
+                      <Preview />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-stone-500">
+                        {item.label}
+                      </p>
+                      <h3
+                        className={`mt-4 text-2xl font-normal leading-snug text-stone-900 sm:text-3xl ${display.className}`}
+                      >
+                        {item.title}
+                      </h3>
+                      <p className="mt-5 text-[15px] leading-relaxed text-stone-600">{item.body}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
@@ -265,14 +413,11 @@ export default function HomePage() {
             <Link href="/listings" className="hover:text-stone-900">
               Listings
             </Link>
-            <Link href="/messages" className="hover:text-stone-900">
-              Messages
+            <Link href="/register" className="hover:text-stone-900">
+              Create account
             </Link>
-            <Link href="/visits" className="hover:text-stone-900">
-              Visits
-            </Link>
-            <Link href="/profile" className="hover:text-stone-900">
-              Profile
+            <Link href="/login" className="hover:text-stone-900">
+              Sign in
             </Link>
           </div>
         </div>
