@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { registerSchema } from '@/lib/utils/validators';
 import { Label } from '@/components/ui/label';
@@ -13,6 +15,8 @@ import { cn } from '@/lib/utils/cn';
 
 export default function RegisterPage() {
   const { register: registerUser, registerPending } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const {
     register,
     handleSubmit,
@@ -97,22 +101,45 @@ export default function RegisterPage() {
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             autoComplete="new-password"
             placeholder="••••••••"
             error={errors.password?.message}
+            rightElement={
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="text-gray-400 hover:text-gray-600"
+                tabIndex={-1}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            }
             {...register('password')}
           />
+          <p className="text-xs text-gray-400">Must be at least 8 characters.</p>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="confirmPassword">Confirm password</Label>
           <Input
             id="confirmPassword"
-            type="password"
+            type={showConfirm ? 'text' : 'password'}
             autoComplete="new-password"
             placeholder="••••••••"
             error={errors.confirmPassword?.message}
+            rightElement={
+              <button
+                type="button"
+                onClick={() => setShowConfirm((v) => !v)}
+                className="text-gray-400 hover:text-gray-600"
+                tabIndex={-1}
+                aria-label={showConfirm ? 'Hide password' : 'Show password'}
+              >
+                {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            }
             {...register('confirmPassword')}
           />
         </div>
