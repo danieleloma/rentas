@@ -3,28 +3,35 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '@/store/authStore';
+import { supabase } from '@/lib/supabase';
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'http://localhost:3000';
 
 export function useSocket() {
   const socketRef = useRef<Socket | null>(null);
-  const accessToken = useAuthStore((s) => s.accessToken);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!isAuthenticated) return;
 
-    const socket = io(WS_URL, {
-      auth: { token: accessToken },
-      transports: ['websocket', 'polling'],
+    let socket: Socket;
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.access_token) return;
+
+      socket = io(WS_URL, {
+        auth: { token: session.access_token },
+        transports: ['websocket', 'polling'],
+      });
+
+      socketRef.current = socket;
     });
 
-    socketRef.current = socket;
-
     return () => {
-      socket.disconnect();
+      socket?.disconnect();
       socketRef.current = null;
     };
-  }, [accessToken]);
+  }, [isAuthenticated]);
 
   const joinConversation = useCallback((conversationId: string) => {
     socketRef.current?.emit('conversation:join', conversationId);
