@@ -1,19 +1,24 @@
-import { BottomNav } from '@/components/layout/bottom-nav';
-import { DashboardAuthGate } from '@/components/layout/dashboard-auth-gate';
-import { Sidebar } from '@/components/layout/sidebar';
+import { BrowseAuthSync } from '@/components/browse/browse-auth-sync';
+import { BrowseHeader } from '@/components/browse/browse-header';
 
 export default function BrowseLayout({ children }: { children: React.ReactNode }) {
   return (
-    <DashboardAuthGate allowGuests>
-      <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
-        <div className="mx-auto flex w-full max-w-7xl">
-          <Sidebar />
-          <main className="min-h-screen w-full flex-1 px-4 py-4 pb-24 sm:px-5 md:px-6 md:py-8 md:pb-8">
-            {children}
-          </main>
+    <div className="min-h-screen bg-[#f7f6f4] text-stone-800 antialiased">
+      <BrowseAuthSync />
+      <BrowseHeader />
+      <main className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+        {children}
+      </main>
+      <footer className="mt-16 border-t border-stone-200 px-5 py-10 sm:px-8">
+        <div className="mx-auto max-w-6xl flex items-center justify-between">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-stone-900">
+            Rentas
+          </p>
+          <p className="text-[12px] text-stone-400">
+            © {new Date().getFullYear()} Rentas
+          </p>
         </div>
-        <BottomNav />
-      </div>
-    </DashboardAuthGate>
+      </footer>
+    </div>
   );
 }

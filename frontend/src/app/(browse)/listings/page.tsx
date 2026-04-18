@@ -2,10 +2,14 @@
 
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { ListingFilters } from '@/components/listings/listing-filters';
-import { ListingGrid } from '@/components/listings/listing-grid';
+import { Cormorant_Garamond, Manrope } from 'next/font/google';
+import { BrowseListingFilters } from '@/components/browse/browse-listing-filters';
+import { BrowseListingGrid } from '@/components/browse/browse-listing-grid';
 import { useListings, useToggleFavorite } from '@/hooks/useListings';
 import { useAuthStore } from '@/store/authStore';
+
+const display = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500', '600'] });
+const sans = Manrope({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 export default function ListingsPage() {
   const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useListings();
@@ -13,34 +17,34 @@ export default function ListingsPage() {
   const user = useAuthStore((s) => s.user);
 
   const listings = data?.pages.flatMap((page) => page.data) ?? [];
-  const isDemoMode = !isLoading && listings.length > 0 && listings.every((listing) => listing.id.startsWith('demo-'));
   const canCreateListing = user?.role === 'landlord' || user?.role === 'admin';
 
   return (
-    <div>
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Browse Listings</h1>
+    <div className={sans.className}>
+      {/* Page header */}
+      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.4em] text-stone-500">
+            Browse
+          </p>
+          <h1 className={`mt-3 text-3xl font-normal leading-snug text-stone-900 sm:text-4xl ${display.className}`}>
+            Available listings
+          </h1>
+        </div>
         {canCreateListing && (
           <Link
             href="/listings/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300"
+            className="inline-flex items-center gap-2 border border-stone-900 px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.2em] text-stone-900 transition hover:bg-stone-900 hover:text-[#f7f6f4]"
           >
-            <Plus className="h-4 w-4" />
-            New Listing
+            <Plus className="h-3.5 w-3.5" />
+            New listing
           </Link>
         )}
       </div>
-      {isDemoMode && (
-        <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900 dark:border-blue-900/70 dark:bg-blue-950/40 dark:text-blue-200">
-          <p className="font-semibold">Demo renter flow enabled</p>
-          <p className="mt-1">
-            Open a listing, use <span className="font-medium">Contact Landlord</span> to go to Messages, and{' '}
-            <span className="font-medium">Schedule Visit</span> to continue the renting journey.
-          </p>
-        </div>
-      )}
-      <ListingFilters />
-      <ListingGrid
+
+      <BrowseListingFilters />
+
+      <BrowseListingGrid
         listings={listings}
         isLoading={isLoading}
         onFavorite={user ? (id) => toggleFavorite.mutate(id) : undefined}
