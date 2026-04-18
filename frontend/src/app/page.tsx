@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Cormorant_Garamond, Manrope } from 'next/font/google';
+import { FeaturedListingsSection } from '@/components/home/featured-listings-section';
 
 const HERO_IMAGE =
   'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=80';
@@ -142,9 +143,11 @@ export default function HomePage() {
           </div>
         </section>
 
+        <FeaturedListingsSection />
+
         <section
           id="platform"
-          className="border-t border-stone-200 bg-[#f7f6f4] px-5 py-20 sm:px-8 sm:py-28"
+          className="border-t border-stone-200 bg-white px-5 py-20 sm:px-8 sm:py-28"
         >
           <div className="mx-auto max-w-6xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.4em] text-stone-500">
