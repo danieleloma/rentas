@@ -7,7 +7,6 @@ import {
 } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
 import { formatDate } from '@/lib/utils/format';
 
@@ -22,17 +21,7 @@ function roleLabel(role: string): string {
 }
 
 export default function ProfilePage() {
-  const { user, isLoading, logout } = useAuth();
-
-  if (isLoading && !user) {
-    return (
-      <div className="mx-auto w-full max-w-2xl space-y-6">
-        <Skeleton className="h-10 w-48" />
-        <Skeleton className="h-40 w-full rounded-xl" />
-        <Skeleton className="h-32 w-full rounded-xl" />
-      </div>
-    );
-  }
+  const { user, logout } = useAuth();
 
   if (!user) {
     return null;
