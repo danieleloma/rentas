@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useAuthStore } from '@/store/authStore';
+import { supabase } from '@/lib/supabase';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
@@ -9,10 +9,10 @@ export const apiClient = axios.create({
   timeout: 30000,
 });
 
-apiClient.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+apiClient.interceptors.request.use(async (config) => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`;
   }
   return config;
 });
@@ -24,23 +24,12 @@ apiClient.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = useAuthStore.getState().refreshToken;
-
-      if (refreshToken) {
-        try {
-          const { data } = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
-          const { accessToken, refreshToken: newRefreshToken } = data.data;
-
-          useAuthStore.getState().setTokens(accessToken, newRefreshToken);
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-
-          return apiClient(originalRequest);
-        } catch {
-          useAuthStore.getState().logout();
-          window.location.href = '/login';
-          return Promise.reject(error);
-        }
+      const { data: { session } } = await supabase.auth.refreshSession();
+      if (session?.access_token) {
+        originalRequest.headers.Authorization = `Bearer ${session.access_token}`;
+        return apiClient(originalRequest);
       }
+      window.location.href = '/login';
     }
 
     return Promise.reject(error);
