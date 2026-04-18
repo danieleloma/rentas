@@ -22,7 +22,7 @@ export function useAuth() {
     onSuccess: (data) => {
       setUser(data.user);
       addToast('Logged in successfully', 'success');
-      router.push('/listings');
+      router.push('/dashboard');
     },
     onError: (err) => {
       addToast(toastMessage(err, 'Invalid email or password'), 'error');
@@ -34,7 +34,7 @@ export function useAuth() {
     onSuccess: (data) => {
       setUser(data.user);
       addToast('Account created successfully', 'success');
-      router.push('/listings');
+      router.push('/dashboard');
     },
     onError: (err) => {
       addToast(toastMessage(err, 'Registration failed. Please try again.'), 'error');

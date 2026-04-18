@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { registerSchema } from '@/lib/utils/validators';
+import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -32,18 +33,20 @@ export default function RegisterPage() {
   const role = watch('role');
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1 text-center sm:text-left">
-        <h1 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl">
-          Create account
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="space-y-2">
+        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+          Create an account
         </h1>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-500">
           Join Rentas to find or list your next place.
         </p>
       </div>
 
+      {/* Form */}
       <form
-        className="space-y-4"
+        className="space-y-5"
         onSubmit={handleSubmit((data) =>
           registerUser({
             email: data.email,
@@ -55,110 +58,119 @@ export default function RegisterPage() {
         )}
         noValidate
       >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="firstName">First name</Label>
+            <Input
+              id="firstName"
+              autoComplete="given-name"
+              placeholder="Jane"
+              error={errors.firstName?.message}
+              {...register('firstName')}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="lastName">Last name</Label>
+            <Input
+              id="lastName"
+              autoComplete="family-name"
+              placeholder="Smith"
+              error={errors.lastName?.message}
+              {...register('lastName')}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
           <Input
-            label="First name"
-            autoComplete="given-name"
-            required
-            error={errors.firstName?.message}
-            {...register('firstName')}
-          />
-          <Input
-            label="Last name"
-            autoComplete="family-name"
-            required
-            error={errors.lastName?.message}
-            {...register('lastName')}
+            id="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@example.com"
+            error={errors.email?.message}
+            {...register('email')}
           />
         </div>
-        <Input
-          label="Email"
-          type="email"
-          autoComplete="email"
-          required
-          error={errors.email?.message}
-          {...register('email')}
-        />
-        <Input
-          label="Password"
-          type="password"
-          autoComplete="new-password"
-          required
-          error={errors.password?.message}
-          {...register('password')}
-        />
-        <Input
-          label="Confirm password"
-          type="password"
-          autoComplete="new-password"
-          required
-          error={errors.confirmPassword?.message}
-          {...register('confirmPassword')}
-        />
 
-        <fieldset className="space-y-2">
-          <legend className="mb-1.5 text-sm font-medium text-gray-700">
-            I am a
-          </legend>
-          <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
-            <label
-              className={cn(
-                'flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors',
-                role === 'renter'
-                  ? 'border-gray-900 bg-gray-900 text-white'
-                  : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300',
-              )}
-            >
-              <input
-                type="radio"
-                value="renter"
-                className="size-4 border-gray-300 text-gray-900 focus:ring-gray-900"
-                {...register('role')}
-              />
-              Renter
-            </label>
-            <label
-              className={cn(
-                'flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors',
-                role === 'landlord'
-                  ? 'border-gray-900 bg-gray-900 text-white'
-                  : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300',
-              )}
-            >
-              <input
-                type="radio"
-                value="landlord"
-                className="size-4 border-gray-300 text-gray-900 focus:ring-gray-900"
-                {...register('role')}
-              />
-              Landlord
-            </label>
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            autoComplete="new-password"
+            placeholder="••••••••"
+            error={errors.password?.message}
+            {...register('password')}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Confirm password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            placeholder="••••••••"
+            error={errors.confirmPassword?.message}
+            {...register('confirmPassword')}
+          />
+        </div>
+
+        {/* Role selector */}
+        <div className="space-y-3">
+          <Label>I am a</Label>
+          <div className="grid grid-cols-2 gap-3">
+            {(['renter', 'landlord'] as const).map((r) => (
+              <label
+                key={r}
+                className={cn(
+                  'flex cursor-pointer items-center gap-2.5 rounded-lg border px-4 py-3 text-sm font-medium transition',
+                  role === r
+                    ? 'border-gray-900 bg-gray-900 text-white'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400 hover:text-gray-900',
+                )}
+              >
+                <input
+                  type="radio"
+                  value={r}
+                  className="sr-only"
+                  {...register('role')}
+                />
+                {r.charAt(0).toUpperCase() + r.slice(1)}
+              </label>
+            ))}
           </div>
-          {errors.role ? (
-            <p className="text-sm text-red-600" role="alert">
-              {errors.role.message}
-            </p>
-          ) : null}
-        </fieldset>
+          {errors.role && (
+            <p className="text-xs text-red-600">{errors.role.message}</p>
+          )}
+        </div>
 
         <Button
           type="submit"
-          className="mt-2 h-10 w-full"
+          className="h-10 w-full"
           disabled={registerPending}
         >
           {registerPending ? 'Creating account…' : 'Create account'}
         </Button>
       </form>
 
-      <p className="border-t border-gray-100 pt-6 text-center text-sm text-gray-600">
-        Already have an account?{' '}
-        <Link
-          href="/login"
-          className="font-medium text-gray-900 underline-offset-4 hover:underline"
-        >
-          Sign in
-        </Link>
-      </p>
+      {/* Divider */}
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-100" />
+        </div>
+        <div className="relative flex justify-center text-xs">
+          <span className="bg-white px-3 text-gray-400">Already have an account?</span>
+        </div>
+      </div>
+
+      <Link
+        href="/login"
+        className="flex h-10 w-full items-center justify-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+      >
+        Sign in
+      </Link>
     </div>
   );
 }
