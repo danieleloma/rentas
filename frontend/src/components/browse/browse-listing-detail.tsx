@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { Cormorant_Garamond, Manrope } from 'next/font/google';
-import { MapPin, Bed, Bath, Maximize, Calendar, ArrowRight, Play, Star, MessageSquare } from 'lucide-react';
+import { MapPin, Bed, Bath, Maximize, Calendar, ArrowRight, Play, Star, MessageSquare, Phone, MessageCircle, Eye } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { formatCurrency, formatDate } from '@/lib/utils/format';
 import { getListingReviewsApi } from '@/lib/api/reviews';
@@ -11,7 +10,13 @@ import { VisitModal } from './visit-modal';
 import { VirtualTourModal } from './virtual-tour-modal';
 import { ListingMap } from './listing-map';
 import { ContactModal } from './contact-modal';
+import { ListingGallery } from './listing-gallery';
 import type { Listing } from '@/types';
+
+function maskPhone(phone: string) {
+  if (phone.length <= 5) return '*'.repeat(phone.length);
+  return phone.slice(0, -5) + '*****';
+}
 
 const display = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500', '600'] });
 const sans = Manrope({ subsets: ['latin'], weight: ['400', '500', '600'] });
@@ -33,6 +38,7 @@ export function BrowseListingDetail({ listing }: { listing: Listing }) {
   const [showVisitModal, setShowVisitModal] = useState(false);
   const [showTourModal, setShowTourModal] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
+  const [contactRevealed, setContactRevealed] = useState(false);
 
   const { data: reviewsData } = useQuery({
     queryKey: ['reviews', listing.id],
@@ -40,7 +46,6 @@ export function BrowseListingDetail({ listing }: { listing: Listing }) {
   });
   const reviews = reviewsData?.data ?? [];
 
-  const [hero, ...rest] = listing.images ?? [];
   const location = [listing.address, listing.city, listing.state].filter(Boolean).join(', ');
   const avgRating = reviews.length
     ? reviews.reduce((s, r) => s + r.overallRating, 0) / reviews.length
@@ -50,75 +55,12 @@ export function BrowseListingDetail({ listing }: { listing: Listing }) {
   return (
     <div className={sans.className}>
       {/* ── Image gallery ─────────────────────────────────────── */}
-      {listing.images.length > 0 ? (
-        <div className="relative">
-          <div className="grid gap-1.5 sm:grid-cols-2">
-            <div className="overflow-hidden bg-stone-100 sm:row-span-2">
-              <Image
-                src={hero.url}
-                alt={listing.title}
-                width={900}
-                height={675}
-                className="aspect-[4/3] w-full object-cover sm:aspect-auto sm:h-full"
-                unoptimized
-                priority
-              />
-            </div>
-            {rest.slice(0, 2).map((img) => (
-              <div key={img.id} className="overflow-hidden bg-stone-100">
-                <Image
-                  src={img.thumbnailUrl ?? img.url}
-                  alt={listing.title}
-                  width={600}
-                  height={450}
-                  className="aspect-[4/3] w-full object-cover"
-                  unoptimized
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Extra row */}
-          {rest.slice(2, 5).length > 0 && (
-            <div
-              className={`mt-1.5 grid gap-1.5 ${
-                rest.slice(2, 5).length === 1
-                  ? 'grid-cols-1'
-                  : rest.slice(2, 5).length === 2
-                    ? 'grid-cols-2'
-                    : 'grid-cols-3'
-              }`}
-            >
-              {rest.slice(2, 5).map((img) => (
-                <div key={img.id} className="overflow-hidden bg-stone-100">
-                  <Image
-                    src={img.thumbnailUrl ?? img.url}
-                    alt={listing.title}
-                    width={600}
-                    height={450}
-                    className="aspect-[4/3] w-full object-cover"
-                    unoptimized
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Virtual tour button — overlaid on gallery */}
-          {listing.virtualTourUrl && (
-            <button
-              type="button"
-              onClick={() => setShowTourModal(true)}
-              className="absolute bottom-4 left-4 flex items-center gap-2 border border-white/80 bg-stone-900/70 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-white backdrop-blur-sm transition hover:bg-stone-900"
-            >
-              <Play className="h-3.5 w-3.5 fill-white" />
-              360° Virtual tour
-            </button>
-          )}
-        </div>
-      ) : (
-        <div className="aspect-[16/9] w-full bg-stone-200 bg-[linear-gradient(135deg,rgba(168,162,158,0.35)_0%,transparent_50%,rgba(120,113,108,0.2)_100%)]" />
-      )}
+      <ListingGallery
+        images={listing.images}
+        title={listing.title}
+        virtualTourUrl={listing.virtualTourUrl}
+        onTourClick={() => setShowTourModal(true)}
+      />
 
       {/* ── Main content ──────────────────────────────────────── */}
       <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_320px]">
@@ -309,14 +251,56 @@ export function BrowseListingDetail({ listing }: { listing: Listing }) {
               </div>
             </div>
 
-            {/* Landlord */}
-            <div className="border-t border-stone-100 pt-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-stone-400">
-                Listed by
-              </p>
-              <p className="mt-2 text-[14px] font-medium text-stone-900">
-                {listing.landlord.firstName} {listing.landlord.lastName}
-              </p>
+            {/* Landlord + contact */}
+            <div className="border-t border-stone-100 pt-5 space-y-4">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-stone-400">
+                  Listed by
+                </p>
+                <p className="mt-2 text-[14px] font-medium text-stone-900">
+                  {listing.landlord.firstName} {listing.landlord.lastName}
+                </p>
+              </div>
+
+              {/* Phone — masked until contact form submitted */}
+              {listing.landlord.phone && (
+                <div className="space-y-2">
+                  {contactRevealed ? (
+                    <>
+                      <a
+                        href={`tel:${listing.landlord.phone}`}
+                        className="flex items-center gap-2.5 border border-stone-200 bg-stone-50 px-4 py-2.5 text-[13px] font-medium text-stone-800 transition hover:border-stone-400"
+                      >
+                        <Phone className="h-3.5 w-3.5 shrink-0 text-stone-400" />
+                        {listing.landlord.phone}
+                      </a>
+                      <a
+                        href={`https://wa.me/${listing.landlord.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I'm interested in "${listing.title}".`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2.5 border border-stone-200 bg-stone-50 px-4 py-2.5 text-[13px] font-medium text-stone-800 transition hover:border-stone-400"
+                      >
+                        <MessageCircle className="h-3.5 w-3.5 shrink-0 text-green-600" />
+                        WhatsApp
+                      </a>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setShowContactModal(true)}
+                      className="flex w-full items-center gap-2.5 border border-dashed border-stone-300 px-4 py-2.5 text-left text-[13px] text-stone-500 transition hover:border-stone-500 hover:text-stone-800"
+                    >
+                      <Phone className="h-3.5 w-3.5 shrink-0 text-stone-300" />
+                      <span className="flex-1 font-mono tracking-widest">
+                        {maskPhone(listing.landlord.phone)}
+                      </span>
+                      <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-400">
+                        <Eye className="h-3 w-3" /> View
+                      </span>
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* CTAs */}
@@ -364,6 +348,7 @@ export function BrowseListingDetail({ listing }: { listing: Listing }) {
           landlordName={`${listing.landlord.firstName} ${listing.landlord.lastName}`}
           landlordPhone={listing.landlord.phone}
           onClose={() => setShowContactModal(false)}
+          onSuccess={() => setContactRevealed(true)}
         />
       )}
       {showVisitModal && (

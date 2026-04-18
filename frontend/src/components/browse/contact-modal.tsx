@@ -15,6 +15,7 @@ interface ContactModalProps {
   landlordName: string;
   landlordPhone?: string;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
 export function ContactModal({
@@ -24,6 +25,7 @@ export function ContactModal({
   landlordName,
   landlordPhone,
   onClose,
+  onSuccess,
 }: ContactModalProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -42,6 +44,7 @@ export function ContactModal({
     try {
       await submitInquiryApi({ listingId, landlordId, name, email, phone: phone || undefined, message });
       setSubmitted(true);
+      onSuccess?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send inquiry');
     } finally {
