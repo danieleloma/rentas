@@ -4,12 +4,16 @@ import { Providers } from '@/app/providers';
 import { ToastContainer } from '@/components/ui/toast';
 import '@/styles/globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'Rentas - Find Your Perfect Rental',
+  title: 'Rentas — Nigeria\'s Trusted Rental Platform',
   description:
-    'Discover apartments and homes for rent, connect with landlords, schedule visits, and chat in real time on the Rentas rental marketplace.',
+    'Find verified rental properties in Lagos, Abuja, Port Harcourt and across Nigeria. Chat directly with landlords, schedule visits, read honest reviews, and book movers.',
 };
 
 export default function RootLayout({
@@ -18,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} font-sans`}>
         <Providers>
           {children}
           <ToastContainer />

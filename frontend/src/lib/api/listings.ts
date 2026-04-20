@@ -5,7 +5,7 @@ import { demoListings } from '@/lib/mock/listings';
 const LISTING_QUERY = `
   id, title, description, property_type, address, city, state, zip_code,
   latitude, longitude, bedrooms, bathrooms, square_footage, monthly_rent,
-  deposit, available_from, amenities, status, is_featured, virtual_tour_url,
+  deposit, available_from, amenities, status, verification_status, is_featured, virtual_tour_url,
   lease_duration, pet_policy, smoking_policy, views_count, created_at, updated_at,
   landlord:users!landlord_id ( id, first_name, last_name, avatar_url, phone ),
   images:listing_images ( id, url, thumbnail_url, position, is_virtual_tour, created_at )
@@ -32,6 +32,7 @@ function mapListing(row: any): Listing {
     availableFrom: row.available_from ?? undefined,
     amenities: row.amenities ?? [],
     status: row.status,
+    verificationStatus: row.verification_status ?? 'unverified',
     isFeatured: row.is_featured,
     virtualTourUrl: row.virtual_tour_url ?? undefined,
     viewsCount: row.views_count,

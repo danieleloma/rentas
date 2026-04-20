@@ -37,20 +37,20 @@ export default function RegisterPage() {
   const role = watch('role');
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Create an account
         </h1>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           Join Rentas to find or list your next place.
         </p>
       </div>
 
       {/* Form */}
       <form
-        className="space-y-5"
+        className="space-y-4"
         onSubmit={handleSubmit((data) =>
           registerUser({
             email: data.email,
@@ -109,7 +109,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground hover:text-foreground"
                 tabIndex={-1}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
@@ -118,7 +118,7 @@ export default function RegisterPage() {
             }
             {...register('password')}
           />
-          <p className="text-xs text-gray-400">Must be at least 8 characters.</p>
+          <p className="text-xs text-muted-foreground">Must be at least 8 characters.</p>
         </div>
 
         <div className="space-y-2">
@@ -133,7 +133,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirm((v) => !v)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground hover:text-foreground"
                 tabIndex={-1}
                 aria-label={showConfirm ? 'Hide password' : 'Show password'}
               >
@@ -154,8 +154,8 @@ export default function RegisterPage() {
                 className={cn(
                   'flex cursor-pointer items-center gap-2.5 rounded-lg border px-4 py-3 text-sm font-medium transition',
                   role === r
-                    ? 'border-gray-900 bg-gray-900 text-white'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400 hover:text-gray-900',
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground',
                 )}
               >
                 <input
@@ -185,16 +185,16 @@ export default function RegisterPage() {
       {/* Divider */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-100" />
+          <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs">
-          <span className="bg-white px-3 text-gray-400">Already have an account?</span>
+          <span className="bg-background px-3 text-muted-foreground">Already have an account?</span>
         </div>
       </div>
 
       <Link
         href="/login"
-        className="flex h-10 w-full items-center justify-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+        className="flex h-10 w-full items-center justify-center rounded-md border border-border text-sm font-medium text-foreground transition hover:bg-accent"
       >
         Sign in
       </Link>

@@ -59,7 +59,12 @@
       "Bash(npx shadcn@latest add button input card form badge --yes --overwrite)",
       "Bash(npx shadcn@latest add form --yes --overwrite)",
       "Bash(npx shadcn@latest:*)",
-      "Bash(yes N)"
+      "Bash(yes N)",
+      "Bash(grep -E \"\\\\.ts$\")",
+      "Bash(npx --yes tsc --noEmit)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(node_modules/typescript/bin/tsc --noEmit)",
+      "Bash(node node_modules/typescript/bin/tsc --noEmit)"
     ]
   }
 }

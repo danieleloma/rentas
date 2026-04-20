@@ -38,6 +38,7 @@ const listingSelect = {
   availableFrom: true,
   amenities: true,
   status: true,
+  verificationStatus: true,
   isFeatured: true,
   virtualTourUrl: true,
   leaseDuration: true,

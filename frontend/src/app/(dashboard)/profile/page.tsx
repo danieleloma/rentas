@@ -1,103 +1,112 @@
 'use client';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { formatDate } from '@/lib/utils/format';
+import { User, Settings, ShieldCheck, LogOut } from 'lucide-react';
 
-function roleLabel(role: string): string {
-  const map: Record<string, string> = {
-    renter: 'Renter',
-    landlord: 'Landlord',
-    mover: 'Mover',
-    admin: 'Admin',
-  };
-  return map[role] ?? role;
-}
+const ROLE_LABELS: Record<string, string> = {
+  renter: 'Renter',
+  landlord: 'Landlord',
+  mover: 'Mover',
+  admin: 'Admin',
+};
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
-
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   const displayName = `${user.firstName} ${user.lastName}`.trim() || user.email;
+  const initials = displayName.slice(0, 2).toUpperCase();
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Profile</h1>
-        <p className="mt-1 text-sm text-gray-600">
-          Your account details and preferences.
-        </p>
+      {/* Page header */}
+      <div className="flex items-center gap-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+          <User className="h-4 w-4 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">Profile</h1>
+          <p className="text-sm text-muted-foreground">Your account details and preferences</p>
+        </div>
       </div>
 
-      <Card className="overflow-hidden">
-        <CardHeader className="flex flex-row flex-wrap items-center gap-4 pb-4 sm:items-start">
-          <Avatar className="size-14 ring-2 ring-white shadow-md">
-            <AvatarImage src={user.avatarUrl ?? undefined} alt={displayName} />
-            <AvatarFallback>{displayName.slice(0, 2).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1 space-y-1">
-            <p className="truncate text-lg font-semibold text-gray-900">
-              {displayName}
-            </p>
-            <p className="truncate text-sm text-gray-600">{user.email}</p>
-            <p className="text-sm text-gray-600">
-              <span className="font-medium text-gray-700">Role:</span>{' '}
-              {roleLabel(user.role)}
-            </p>
-            <p className="text-sm text-gray-600">
-              <span className="font-medium text-gray-700">Member since</span>{' '}
-              {formatDate(user.createdAt)}
-            </p>
+      {/* Identity card */}
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="flex flex-wrap items-start gap-4">
+            <Avatar className="h-16 w-16 ring-2 ring-border">
+              <AvatarImage src={user.avatarUrl ?? undefined} alt={displayName} />
+              <AvatarFallback className="bg-primary text-primary-foreground font-bold text-lg">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="flex-1 space-y-1 min-w-0">
+              <p className="text-lg font-bold text-foreground truncate">{displayName}</p>
+              <p className="text-sm text-muted-foreground truncate">{user.email}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                  {ROLE_LABELS[user.role] ?? user.role}
+                </span>
+                {user.emailVerified && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                    <ShieldCheck className="h-3 w-3" /> Email verified
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Member since {formatDate(user.createdAt)}
+              </p>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="shrink-0"
+              onClick={() => logout()}
+            >
+              <LogOut className="mr-1.5 h-3.5 w-3.5" />
+              Log out
+            </Button>
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full shrink-0 sm:w-auto"
-            onClick={() => logout()}
-          >
-            Log out
-          </Button>
         </CardHeader>
       </Card>
 
+      {/* Edit profile */}
       <Card>
         <CardHeader>
-          <h2 className="text-base font-semibold text-gray-900">
-            Edit profile
-          </h2>
-          <p className="text-sm text-gray-500">
-            Update your name, photo, and contact details.
-          </p>
+          <div className="flex items-center gap-2">
+            <User className="h-4 w-4 text-muted-foreground" />
+            <p className="text-sm font-semibold text-foreground">Edit profile</p>
+          </div>
+          <p className="text-xs text-muted-foreground">Update your name, photo, and contact details</p>
         </CardHeader>
         <CardContent>
-          <p className="rounded-lg border border-dashed border-gray-200 bg-gray-50/80 px-4 py-8 text-center text-sm text-gray-500">
-            Coming soon
-          </p>
+          <div className="rounded-lg border border-dashed border-border bg-muted/30 px-4 py-10 text-center">
+            <p className="text-sm font-medium text-muted-foreground">Coming soon</p>
+            <p className="mt-1 text-xs text-muted-foreground/70">Profile editing will be available shortly</p>
+          </div>
         </CardContent>
       </Card>
 
+      {/* Account settings */}
       <Card>
         <CardHeader>
-          <h2 className="text-base font-semibold text-gray-900">
-            Account settings
-          </h2>
-          <p className="text-sm text-gray-500">
-            Password, notifications, and security.
-          </p>
+          <div className="flex items-center gap-2">
+            <Settings className="h-4 w-4 text-muted-foreground" />
+            <p className="text-sm font-semibold text-foreground">Account settings</p>
+          </div>
+          <p className="text-xs text-muted-foreground">Password, notifications, and security</p>
         </CardHeader>
         <CardContent>
-          <p className="rounded-lg border border-dashed border-gray-200 bg-gray-50/80 px-4 py-8 text-center text-sm text-gray-500">
-            Coming soon
-          </p>
+          <div className="rounded-lg border border-dashed border-border bg-muted/30 px-4 py-10 text-center">
+            <p className="text-sm font-medium text-muted-foreground">Coming soon</p>
+            <p className="mt-1 text-xs text-muted-foreground/70">Security settings will be available shortly</p>
+          </div>
         </CardContent>
       </Card>
     </div>

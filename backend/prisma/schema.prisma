@@ -59,18 +59,19 @@ model Listing {
   city            String    @db.VarChar(100)
   state           String?   @db.VarChar(100)
   zipCode         String?   @map("zip_code") @db.VarChar(20)
-  country         String    @default("USA") @db.VarChar(100)
-  latitude        Decimal?  @db.Decimal(10, 8)
-  longitude       Decimal?  @db.Decimal(11, 8)
-  bedrooms        Int
-  bathrooms       Decimal?  @db.Decimal(3, 1)
-  squareFootage   Int?      @map("square_footage")
-  monthlyRent     Decimal   @map("monthly_rent") @db.Decimal(10, 2)
-  deposit         Decimal?  @db.Decimal(10, 2)
-  availableFrom   DateTime? @map("available_from") @db.Date
-  amenities       Json      @default("[]")
-  status          String    @default("active") @db.VarChar(20)
-  isFeatured      Boolean   @default(false) @map("is_featured")
+  country             String    @default("Nigeria") @db.VarChar(100)
+  latitude            Decimal?  @db.Decimal(10, 8)
+  longitude           Decimal?  @db.Decimal(11, 8)
+  bedrooms            Int
+  bathrooms           Decimal?  @db.Decimal(3, 1)
+  squareFootage       Int?      @map("square_footage")
+  monthlyRent         Decimal   @map("monthly_rent") @db.Decimal(10, 2)
+  deposit             Decimal?  @db.Decimal(10, 2)
+  availableFrom       DateTime? @map("available_from") @db.Date
+  amenities           Json      @default("[]")
+  status              String    @default("active") @db.VarChar(20)
+  verificationStatus  String    @default("unverified") @map("verification_status") @db.VarChar(20)
+  isFeatured          Boolean   @default(false) @map("is_featured")
   virtualTourUrl  String?   @map("virtual_tour_url") @db.VarChar(500)
   leaseDuration   String?   @map("lease_duration") @db.VarChar(50)
   petPolicy       String?   @map("pet_policy") @db.VarChar(20)
@@ -188,6 +189,7 @@ model Review {
   comment            String    @db.Text
   pros               Json      @default("[]")
   cons               Json      @default("[]")
+  tags               Json      @default("[]")
   landlordResponse   String?   @map("landlord_response") @db.Text
   responseAt         DateTime? @map("response_at")
   isVerified         Boolean   @default(false) @map("is_verified")

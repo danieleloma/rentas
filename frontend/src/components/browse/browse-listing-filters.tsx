@@ -9,19 +9,23 @@ const sans = Manrope({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 const PROPERTY_TYPES = [
   { value: '', label: 'All types' },
-  { value: 'apartment', label: 'Apartment' },
-  { value: 'house', label: 'House' },
-  { value: 'condo', label: 'Condo' },
-  { value: 'townhouse', label: 'Townhouse' },
+  { value: 'apartment', label: 'Apartment / Flat' },
+  { value: 'self_contained', label: 'Self-Contained' },
+  { value: 'room_and_parlour', label: 'Room & Parlour' },
+  { value: 'duplex', label: 'Duplex' },
+  { value: 'bungalow', label: 'Bungalow' },
+  { value: 'house', label: 'Detached House' },
+  { value: 'mini_flat', label: 'Mini Flat' },
+  { value: 'studio', label: 'Studio' },
 ];
 
 const BEDROOM_OPTIONS = [
   { value: '', label: 'Any' },
-  { value: '0', label: 'Studio' },
-  { value: '1', label: '1' },
-  { value: '2', label: '2' },
-  { value: '3', label: '3' },
-  { value: '4', label: '4+' },
+  { value: '0', label: 'Self-Con / Studio' },
+  { value: '1', label: '1 Bedroom' },
+  { value: '2', label: '2 Bedrooms' },
+  { value: '3', label: '3 Bedrooms' },
+  { value: '4', label: '4+ Bedrooms' },
 ];
 
 const BATHROOM_OPTIONS = [
@@ -31,16 +35,17 @@ const BATHROOM_OPTIONS = [
   { value: '3', label: '3+' },
 ];
 
+// Nigeria-relevant amenities
 const AMENITY_OPTIONS = [
-  'Parking', 'Pool', 'Gym', 'Laundry', 'Pet-friendly',
-  'Furnished', 'A/C', 'Dishwasher', 'Balcony', 'Elevator',
+  'Prepaid Meter', 'Borehole', 'Fence / Gate', 'CCTV', 'Boys Quarters',
+  'Parking', 'Generator', 'Air Conditioning', 'Tiled Floors', 'POP Ceiling',
 ];
 
 const inputCls =
-  'w-full border-b border-stone-300 bg-transparent py-2 text-[13px] text-stone-900 placeholder-stone-400 focus:border-stone-800 focus:outline-none transition';
+  'w-full border-b border-stone-300 bg-transparent py-2 text-[13px] text-stone-900 placeholder-stone-400 focus:border-emerald-700 focus:outline-none transition';
 
 const selectCls =
-  'w-full border-b border-stone-300 bg-transparent py-2 text-[13px] text-stone-900 focus:border-stone-800 focus:outline-none transition appearance-none cursor-pointer';
+  'w-full border-b border-stone-300 bg-transparent py-2 text-[13px] text-stone-900 focus:border-emerald-700 focus:outline-none transition appearance-none cursor-pointer';
 
 const labelCls = 'block text-[10px] font-semibold uppercase tracking-[0.3em] text-stone-400 mb-2';
 
@@ -67,7 +72,7 @@ export function BrowseListingFilters() {
         <Search className="h-4 w-4 shrink-0 text-stone-400" />
         <input
           type="text"
-          placeholder="Search by keyword, city, or address…"
+          placeholder="Search by area, estate, or address…"
           value={filters.keyword}
           onChange={(e) => setFilter('keyword', e.target.value)}
           className="flex-1 bg-transparent py-3 text-[14px] text-stone-900 placeholder-stone-400 focus:outline-none"
@@ -80,7 +85,7 @@ export function BrowseListingFilters() {
           {showFilters ? <X className="h-3.5 w-3.5" /> : <SlidersHorizontal className="h-3.5 w-3.5" />}
           {showFilters ? 'Close' : 'Filters'}
           {hasActiveFilters && !showFilters && (
-            <span className="h-1.5 w-1.5 rounded-full bg-stone-800" />
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-700" />
           )}
         </button>
       </div>
@@ -90,10 +95,10 @@ export function BrowseListingFilters() {
         <div className="space-y-6 pt-2">
           <div className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4">
             <div>
-              <label className={labelCls}>City</label>
+              <label className={labelCls}>City / LGA</label>
               <input
                 type="text"
-                placeholder="e.g. New York"
+                placeholder="e.g. Lekki, Ikeja, Abuja"
                 value={filters.city}
                 onChange={(e) => setFilter('city', e.target.value)}
                 className={inputCls}
@@ -140,11 +145,11 @@ export function BrowseListingFilters() {
             </div>
 
             <div className="col-span-2">
-              <label className={labelCls}>Price range</label>
+              <label className={labelCls}>Monthly Rent (₦)</label>
               <div className="flex items-center gap-3">
                 <input
                   type="number"
-                  placeholder="Min $"
+                  placeholder="Min ₦"
                   value={filters.minPrice}
                   onChange={(e) => setFilter('minPrice', e.target.value)}
                   className={`${inputCls} w-1/2`}
@@ -152,7 +157,7 @@ export function BrowseListingFilters() {
                 <span className="text-stone-300">–</span>
                 <input
                   type="number"
-                  placeholder="Max $"
+                  placeholder="Max ₦"
                   value={filters.maxPrice}
                   onChange={(e) => setFilter('maxPrice', e.target.value)}
                   className={`${inputCls} w-1/2`}
@@ -163,7 +168,7 @@ export function BrowseListingFilters() {
 
           {/* Amenities */}
           <div>
-            <label className={labelCls}>Amenities</label>
+            <label className={labelCls}>Features</label>
             <div className="mt-1 flex flex-wrap gap-2">
               {AMENITY_OPTIONS.map((amenity) => {
                 const active = filters.amenities.includes(amenity);
@@ -172,10 +177,10 @@ export function BrowseListingFilters() {
                     key={amenity}
                     type="button"
                     onClick={() => toggleAmenity(amenity)}
-                    className={`border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] transition ${
+                    className={`rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] transition ${
                       active
-                        ? 'border-stone-900 bg-stone-900 text-[#f7f6f4]'
-                        : 'border-stone-300 text-stone-600 hover:border-stone-600'
+                        ? 'border-emerald-700 bg-emerald-700 text-white'
+                        : 'border-stone-300 text-stone-600 hover:border-emerald-600 hover:text-emerald-700'
                     }`}
                   >
                     {amenity}

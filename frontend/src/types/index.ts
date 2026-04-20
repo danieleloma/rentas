@@ -18,6 +18,8 @@ export interface AuthTokens {
   refreshToken: string;
 }
 
+export type VerificationStatus = 'unverified' | 'phone_verified' | 'fully_verified';
+
 export interface Listing {
   id: string;
   title: string;
@@ -38,6 +40,7 @@ export interface Listing {
   amenities: string[];
   status: string;
   isFeatured: boolean;
+  verificationStatus: VerificationStatus;
   virtualTourUrl?: string;
   viewsCount: number;
   createdAt: string;
@@ -115,6 +118,8 @@ export interface Visit {
   createdAt: string;
 }
 
+export type ReviewTag = 'security' | 'water' | 'power' | 'noise' | 'flood_risk';
+
 export interface Review {
   id: string;
   listingId: string;
@@ -127,6 +132,7 @@ export interface Review {
   comment: string;
   pros: string[];
   cons: string[];
+  tags: ReviewTag[];
   landlordResponse?: string;
   responseAt?: string;
   isVerified: boolean;
@@ -140,13 +146,32 @@ export interface Mover {
   companyName: string;
   logoUrl?: string;
   description?: string;
-  serviceArea: Record<string, unknown>;
-  services: Record<string, unknown>;
+  serviceArea: string[];
+  services: string[];
   hourlyRate?: number;
   fixedPrice?: number;
   insuranceCoverage?: number;
   isVerified: boolean;
   isActive: boolean;
+  rating?: number;
+  reviewCount?: number;
+}
+
+export interface MoverBooking {
+  id: string;
+  moverId: string;
+  renterId: string;
+  listingId?: string;
+  pickupAddress: string;
+  dropoffAddress: string;
+  scheduledDate: string;
+  services: string[];
+  estimatedPrice: number;
+  finalPrice?: number;
+  status: string;
+  note?: string;
+  createdAt: string;
+  mover?: Pick<Mover, 'id' | 'companyName' | 'logoUrl'>;
 }
 
 export interface ApiResponse<T> {

@@ -1,20 +1,29 @@
 'use client';
 
-import { Manrope } from 'next/font/google';
 import { BrowseListingCard } from './browse-listing-card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { SearchX } from 'lucide-react';
 import type { Listing } from '@/types';
-
-const sans = Manrope({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 function SkeletonCard() {
   return (
-    <div className="animate-pulse">
-      <div className="aspect-[4/3] w-full bg-stone-200" />
-      <div className="mt-4 space-y-2.5">
-        <div className="h-5 w-2/5 rounded bg-stone-200" />
-        <div className="h-4 w-3/4 rounded bg-stone-100" />
-        <div className="h-4 w-1/2 rounded bg-stone-100" />
-        <div className="h-3.5 w-1/3 rounded bg-stone-100" />
+    <div className="flex flex-col overflow-hidden rounded-lg border border-border">
+      <Skeleton className="aspect-[4/3] w-full rounded-none" />
+      <div className="space-y-3 p-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 space-y-1.5">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+          <div className="space-y-1">
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-3 w-8 ml-auto" />
+          </div>
+        </div>
+        <div className="flex gap-3">
+          <Skeleton className="h-3 w-12" />
+          <Skeleton className="h-3 w-12" />
+        </div>
       </div>
     </div>
   );
@@ -23,6 +32,7 @@ function SkeletonCard() {
 interface BrowseListingGridProps {
   listings: Listing[];
   onFavorite?: (id: string) => void;
+  favoritedIds?: string[];
   isLoading?: boolean;
   hasMore?: boolean;
   onLoadMore?: () => void;
@@ -32,6 +42,7 @@ interface BrowseListingGridProps {
 export function BrowseListingGrid({
   listings,
   onFavorite,
+  favoritedIds = [],
   isLoading,
   hasMore,
   onLoadMore,
@@ -39,7 +50,7 @@ export function BrowseListingGrid({
 }: BrowseListingGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
       </div>
     );
@@ -47,12 +58,13 @@ export function BrowseListingGrid({
 
   if (listings.length === 0) {
     return (
-      <div className={`${sans.className} py-20 text-center`}>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.4em] text-stone-400">
-          No results
-        </p>
-        <p className="mt-3 text-[15px] text-stone-500">
-          No listings match your filters. Try adjusting your search.
+      <div className="flex flex-col items-center gap-3 py-24 text-center">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+          <SearchX className="h-6 w-6 text-muted-foreground" />
+        </div>
+        <p className="font-semibold text-foreground">No listings found</p>
+        <p className="max-w-xs text-sm text-muted-foreground">
+          Try adjusting your filters or search for a different city.
         </p>
       </div>
     );
@@ -60,19 +72,24 @@ export function BrowseListingGrid({
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {listings.map((listing) => (
-          <BrowseListingCard key={listing.id} listing={listing} onFavorite={onFavorite} />
+          <BrowseListingCard
+            key={listing.id}
+            listing={listing}
+            onFavorite={onFavorite}
+            isFavorited={favoritedIds.includes(listing.id)}
+          />
         ))}
       </div>
 
       {hasMore && (
-        <div className={`${sans.className} mt-14 text-center`}>
+        <div className="mt-12 flex justify-center">
           <button
             type="button"
             onClick={onLoadMore}
             disabled={isFetchingMore}
-            className="inline-flex items-center justify-center border border-stone-900 px-10 py-3.5 text-[13px] font-semibold uppercase tracking-[0.2em] text-stone-900 transition hover:bg-stone-900 hover:text-[#f7f6f4] disabled:opacity-40"
+            className="rounded-md border border-border px-8 py-2.5 text-sm font-semibold text-foreground transition hover:bg-accent disabled:opacity-50"
           >
             {isFetchingMore ? 'Loading…' : 'Load more'}
           </button>
