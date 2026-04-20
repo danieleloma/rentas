@@ -18,7 +18,7 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
-      loginApi(email, password),
+      loginApi(email.trim().toLowerCase(), password),
     onSuccess: (data) => {
       setUser(data.user);
       addToast('Logged in successfully', 'success');

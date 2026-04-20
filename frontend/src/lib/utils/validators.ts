@@ -1,9 +1,6 @@
 import { z } from 'zod';
 
-const emailField = z
-  .string()
-  .email('Invalid email address')
-  .transform((s) => s.trim().toLowerCase());
+const emailField = z.string().email('Invalid email address');
 
 export const loginSchema = z.object({
   email: emailField,
