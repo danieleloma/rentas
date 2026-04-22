@@ -64,7 +64,9 @@
       "Bash(npx --yes tsc --noEmit)",
       "Bash(./node_modules/.bin/tsc --noEmit)",
       "Bash(node_modules/typescript/bin/tsc --noEmit)",
-      "Bash(node node_modules/typescript/bin/tsc --noEmit)"
+      "Bash(node node_modules/typescript/bin/tsc --noEmit)",
+      "Bash(gh --version)",
+      "Bash(start http://localhost:3001)"
     ]
   }
 }
