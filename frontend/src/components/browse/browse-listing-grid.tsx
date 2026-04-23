@@ -73,13 +73,18 @@ export function BrowseListingGrid({
   return (
     <div>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {listings.map((listing) => (
-          <BrowseListingCard
+        {listings.map((listing, i) => (
+          <div
             key={listing.id}
-            listing={listing}
-            onFavorite={onFavorite}
-            isFavorited={favoritedIds.includes(listing.id)}
-          />
+            className="animate-fade-up"
+            style={{ animationDelay: `${i * 55}ms` }}
+          >
+            <BrowseListingCard
+              listing={listing}
+              onFavorite={onFavorite}
+              isFavorited={favoritedIds.includes(listing.id)}
+            />
+          </div>
         ))}
       </div>
 

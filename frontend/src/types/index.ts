@@ -98,6 +98,7 @@ export interface UserSummary {
   firstName: string;
   lastName: string;
   avatarUrl?: string;
+  phone?: string;
 }
 
 export interface Visit {

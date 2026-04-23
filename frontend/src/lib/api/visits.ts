@@ -5,8 +5,8 @@ const VISIT_QUERY = `
   id, listing_id, renter_id, landlord_id, scheduled_at, end_at,
   viewing_type, status, note, actual_start, actual_end, created_at, updated_at,
   listing:listings ( id, title, address, city ),
-  renter:users!renter_id ( id, first_name, last_name, avatar_url ),
-  landlord:users!landlord_id ( id, first_name, last_name, avatar_url )
+  renter:users!renter_id ( id, first_name, last_name, avatar_url, phone ),
+  landlord:users!landlord_id ( id, first_name, last_name, avatar_url, phone )
 ` as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,12 +24,14 @@ function mapVisit(row: any): Visit {
       firstName: row.renter?.first_name ?? '',
       lastName: row.renter?.last_name ?? '',
       avatarUrl: row.renter?.avatar_url ?? undefined,
+      phone: row.renter?.phone ?? undefined,
     },
     landlord: {
       id: row.landlord?.id ?? row.landlord_id,
       firstName: row.landlord?.first_name ?? '',
       lastName: row.landlord?.last_name ?? '',
       avatarUrl: row.landlord?.avatar_url ?? undefined,
+      phone: row.landlord?.phone ?? undefined,
     },
     scheduledAt: row.scheduled_at,
     endAt: row.end_at ?? undefined,
@@ -97,10 +99,13 @@ export async function createVisitApi(payload: {
   return mapVisit(data);
 }
 
-export async function updateVisitStatusApi(id: string, status: string) {
+export async function updateVisitStatusApi(id: string, status: string, reason?: string) {
+  const updatePayload: Record<string, string> = { status };
+  if (reason) updatePayload.rejection_reason = reason;
+
   const { data, error } = await supabase
     .from('visits')
-    .update({ status })
+    .update(updatePayload)
     .eq('id', id)
     .select(VISIT_QUERY)
     .single();

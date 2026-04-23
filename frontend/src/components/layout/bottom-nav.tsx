@@ -2,19 +2,30 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Calendar, Home, MessageSquare, User, Inbox } from 'lucide-react';
+import { Calendar, Home, MessageSquare, User, Inbox, Truck } from 'lucide-react';
+import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils/cn';
-
-const tabs = [
-  { href: '/listings', label: 'Home', icon: Home },
-  { href: '/messages', label: 'Chat', icon: MessageSquare },
-  { href: '/visits', label: 'Visits', icon: Calendar },
-  { href: '/inquiries', label: 'Inbox', icon: Inbox },
-  { href: '/profile', label: 'Profile', icon: User },
-] as const;
 
 export function BottomNav() {
   const pathname = usePathname();
+  const user = useAuthStore((s) => s.user);
+  const isLandlord = user?.role === 'landlord' || user?.role === 'admin';
+
+  const tabs = isLandlord
+    ? [
+        { href: '/listings', label: 'Browse', icon: Home },
+        { href: '/inquiries', label: 'Inbox', icon: Inbox },
+        { href: '/messages', label: 'Chat', icon: MessageSquare },
+        { href: '/visits', label: 'Visits', icon: Calendar },
+        { href: '/profile', label: 'Profile', icon: User },
+      ]
+    : [
+        { href: '/listings', label: 'Browse', icon: Home },
+        { href: '/messages', label: 'Chat', icon: MessageSquare },
+        { href: '/visits', label: 'Visits', icon: Calendar },
+        { href: '/movers', label: 'Movers', icon: Truck },
+        { href: '/profile', label: 'Profile', icon: User },
+      ];
 
   return (
     <nav
@@ -23,7 +34,8 @@ export function BottomNav() {
     >
       <div className="flex h-16 items-stretch justify-around">
         {tabs.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(`${href}/`);
+          const exactOnly = ['/listings'];
+          const active = pathname === href || (!exactOnly.includes(href) && pathname.startsWith(`${href}/`));
           return (
             <Link
               key={href}
@@ -33,10 +45,7 @@ export function BottomNav() {
                 active ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
               )}
             >
-              <Icon
-                className="h-5 w-5"
-                strokeWidth={active ? 2.5 : 1.75}
-              />
+              <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 1.75} />
               <span>{label}</span>
             </Link>
           );

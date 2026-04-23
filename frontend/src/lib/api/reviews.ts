@@ -92,6 +92,37 @@ export async function createReviewApi(listingId: string, payload: CreateReviewPa
   return mapReview(data);
 }
 
+export async function respondToReviewApi(reviewId: string, response: string) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error('Not authenticated');
+
+  const { data, error } = await supabase
+    .from('reviews')
+    .update({ landlord_response: response, response_at: new Date().toISOString() })
+    .eq('id', reviewId)
+    .select(REVIEW_QUERY)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return mapReview(data);
+}
+
+export async function flagReviewApi(reviewId: string, reason: string, notes?: string) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error('Not authenticated');
+
+  const { error } = await supabase.from('review_flags').insert({
+    review_id: reviewId,
+    reporter_id: session.user.id,
+    reason,
+    notes: notes ?? null,
+    status: 'pending',
+  });
+
+  if (error) throw new Error(error.message);
+  return { success: true };
+}
+
 export async function createReportApi(listingId: string, category: string, description?: string) {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) throw new Error('Not authenticated');

@@ -1,12 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Phone, MessageCircle, CheckCircle } from 'lucide-react';
-import { Cormorant_Garamond, Manrope } from 'next/font/google';
+import { Phone, MessageCircle, CheckCircle } from 'lucide-react';
+import { Modal } from '@/components/ui/modal';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { submitInquiryApi } from '@/lib/api/inquiries';
-
-const display = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500', '600'] });
-const sans = Manrope({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 interface ContactModalProps {
   listingId: string;
@@ -56,153 +55,93 @@ export function ContactModal({
     ? `https://wa.me/${landlordPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hi ${landlordName}, I'm interested in "${listingTitle}".`)}`
     : null;
 
-  const inputCls =
-    'w-full border-b border-stone-300 bg-transparent py-2 text-[14px] text-stone-900 placeholder-stone-400 transition focus:border-stone-800 focus:outline-none';
-  const labelCls = 'mb-2 block text-[10px] font-semibold uppercase tracking-[0.3em] text-stone-400';
-
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center p-0 sm:p-6">
-      {/* Backdrop */}
-      <button
-        type="button"
-        onClick={onClose}
-        className="absolute inset-0 bg-stone-900/50 backdrop-blur-sm"
-        aria-label="Close"
-      />
-
-      {/* Panel */}
-      <div className={`${sans.className} relative w-full max-w-md bg-[#f7f6f4] px-6 py-8 sm:px-8 max-h-[90vh] overflow-y-auto`}>
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-5 top-5 text-stone-400 transition hover:text-stone-900"
-        >
-          <X className="h-4 w-4" />
-        </button>
-
-        {!submitted ? (
-          <>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-stone-400">Enquire</p>
-            <h2 className={`mt-2 text-2xl font-normal text-stone-900 ${display.className}`}>
-              Contact landlord
-            </h2>
-            <p className="mt-1 truncate text-[13px] text-stone-500">{listingTitle}</p>
-
-            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-              <div>
-                <label className={labelCls}>Your name</label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Full name"
-                  className={inputCls}
-                />
-              </div>
-
-              <div>
-                <label className={labelCls}>Email</label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  className={inputCls}
-                />
-              </div>
-
-              <div>
-                <label className={labelCls}>
-                  Phone{' '}
-                  <span className="font-normal normal-case tracking-normal text-stone-400">(optional)</span>
-                </label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+1 555 000 0000"
-                  className={inputCls}
-                />
-              </div>
-
-              <div>
-                <label className={labelCls}>Message</label>
-                <textarea
-                  required
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  rows={4}
-                  className="w-full resize-none border-b border-stone-300 bg-transparent py-2 text-[14px] text-stone-900 placeholder-stone-400 transition focus:border-stone-800 focus:outline-none"
-                />
-              </div>
-
-              {error && (
-                <p className="text-[12px] text-red-600">{error}</p>
-              )}
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full bg-stone-900 py-3.5 text-[13px] font-semibold uppercase tracking-[0.2em] text-[#f7f6f4] transition hover:bg-stone-800 disabled:opacity-40"
-              >
-                {submitting ? 'Sending…' : 'Send inquiry'}
-              </button>
-            </form>
-          </>
-        ) : (
-          <div className="py-4">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-stone-400">Sent</p>
-                <h2 className={`mt-1 text-2xl font-normal text-stone-900 ${display.className}`}>
-                  Inquiry received
-                </h2>
-              </div>
+    <Modal isOpen onClose={onClose} title={submitted ? 'Inquiry received' : 'Contact landlord'}>
+      {!submitted ? (
+        <>
+          <p className="mb-5 truncate text-sm text-muted-foreground">{listingTitle}</p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Your name"
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Full name"
+            />
+            <Input
+              label="Email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+            />
+            <Input
+              label="Phone (optional)"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+234 800 000 0000"
+            />
+            <div>
+              <label className="mb-1.5 block text-sm font-medium leading-none">Message</label>
+              <textarea
+                required
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={4}
+                className="mt-1.5 w-full resize-none rounded-lg border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              />
             </div>
-            <p className="mt-4 text-[14px] leading-relaxed text-stone-600">
-              {landlordName} will be in touch at <strong>{email}</strong>
-              {phone && <> or <strong>{phone}</strong></>}.
+            {error && <p className="text-xs text-destructive">{error}</p>}
+            <Button type="submit" className="w-full" disabled={submitting}>
+              {submitting ? 'Sending…' : 'Send inquiry'}
+            </Button>
+          </form>
+        </>
+      ) : (
+        <div className="space-y-5">
+          <div className="flex items-start gap-3">
+            <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {landlordName} will be in touch at{' '}
+              <strong className="text-foreground">{email}</strong>
+              {phone && <> or <strong className="text-foreground">{phone}</strong></>}.
             </p>
-
-            {landlordPhone && (
-              <div className="mt-8 space-y-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-stone-400">
-                  Landlord contact
-                </p>
-                <a
-                  href={`tel:${landlordPhone}`}
-                  className="flex items-center gap-3 border border-stone-200 bg-white px-4 py-3.5 text-[13px] font-medium text-stone-800 transition hover:border-stone-800"
-                >
-                  <Phone className="h-4 w-4 shrink-0 text-stone-400" />
-                  {landlordPhone}
-                </a>
-                {waLink && (
-                  <a
-                    href={waLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 border border-stone-200 bg-white px-4 py-3.5 text-[13px] font-medium text-stone-800 transition hover:border-stone-800"
-                  >
-                    <MessageCircle className="h-4 w-4 shrink-0 text-green-600" />
-                    WhatsApp
-                  </a>
-                )}
-              </div>
-            )}
-
-            <button
-              type="button"
-              onClick={onClose}
-              className="mt-8 w-full border border-stone-300 py-3 text-[13px] font-semibold uppercase tracking-[0.2em] text-stone-600 transition hover:border-stone-800 hover:text-stone-900"
-            >
-              Close
-            </button>
           </div>
-        )}
-      </div>
-    </div>
+
+          {landlordPhone && (
+            <div className="space-y-2">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                Landlord contact
+              </p>
+              <a
+                href={`tel:${landlordPhone}`}
+                className="flex items-center gap-3 rounded-lg border border-border bg-muted px-4 py-3 text-sm font-medium text-foreground transition hover:bg-muted/80"
+              >
+                <Phone className="h-4 w-4 shrink-0 text-muted-foreground" />
+                {landlordPhone}
+              </a>
+              {waLink && (
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 transition hover:bg-green-100"
+                >
+                  <MessageCircle className="h-4 w-4 shrink-0 text-green-600" />
+                  WhatsApp
+                </a>
+              )}
+            </div>
+          )}
+
+          <Button variant="outline" className="w-full" onClick={onClose}>
+            Close
+          </Button>
+        </div>
+      )}
+    </Modal>
   );
 }

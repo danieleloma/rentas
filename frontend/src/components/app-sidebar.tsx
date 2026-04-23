@@ -25,6 +25,7 @@ import {
   PlusCircleIcon,
   SettingsIcon,
   HelpCircleIcon,
+  BuildingIcon,
 } from "lucide-react"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -35,7 +36,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboardIcon /> },
     { title: "Listings", url: "/listings", icon: <HomeIcon /> },
     ...(isLandlord
-      ? [{ title: "Inquiries", url: "/inquiries", icon: <InboxIcon /> }]
+      ? [
+          { title: "My Listings", url: "/listings/manage", icon: <BuildingIcon /> },
+          { title: "Inquiries", url: "/inquiries", icon: <InboxIcon /> },
+        ]
       : []),
     { title: "Messages", url: "/messages", icon: <MessageSquareIcon /> },
     { title: "Visits", url: "/visits", icon: <CalendarIcon /> },

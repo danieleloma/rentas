@@ -8,8 +8,9 @@ import { Eye, EyeOff } from 'lucide-react';
 import { loginSchema, type LoginFormData } from '@/lib/utils/validators';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { cn } from '@/lib/utils/cn';
 
 export default function LoginPage() {
   const { login, loginPending } = useAuth();
@@ -25,13 +26,13 @@ export default function LoginPage() {
 
   return (
     <div className="space-y-6">
-      <div>
+      {/* Header */}
+      <div className="space-y-1 text-center">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Sign in to your Rentas account
-        </p>
+        <p className="text-sm text-muted-foreground">Sign in to your Rentas account</p>
       </div>
 
+      {/* Form */}
       <form className="space-y-4" onSubmit={handleSubmit((data) => login(data))} noValidate>
         <div className="space-y-1.5">
           <Label htmlFor="email">Email address</Label>
@@ -76,28 +77,23 @@ export default function LoginPage() {
           />
         </div>
 
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={loginPending}
-        >
+        <Button type="submit" className="w-full" disabled={loginPending}>
           {loginPending ? 'Signing in…' : 'Sign in'}
         </Button>
       </form>
 
+      {/* Divider */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border" />
+          <span className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs">
-          <span className="bg-background px-3 text-muted-foreground">New to Rentas?</span>
+          <span className="bg-card px-3 text-muted-foreground">New to Rentas?</span>
         </div>
       </div>
 
-      <Link
-        href="/register"
-        className="flex h-10 w-full items-center justify-center rounded-md border border-border text-sm font-medium text-foreground transition hover:bg-accent"
-      >
+      {/* Register link */}
+      <Link href="/register" className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
         Create an account
       </Link>
     </div>

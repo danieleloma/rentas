@@ -12,8 +12,18 @@ export interface ChatWindowProps {
   conversationId: string;
 }
 
+const LANDLORD_QUICK_REPLIES = [
+  'Property is still available',
+  "I'll confirm your visit shortly",
+  'Sorry, this property has been taken',
+  'Please call me to discuss details',
+];
+
 export function ChatWindow({ conversationId }: ChatWindowProps) {
   const userId = useAuthStore((s) => s.user?.id);
+  const role = useAuthStore((s) => s.user?.role);
+  const isLandlord = role === 'landlord' || role === 'admin';
+
   const [text, setText] = useState('');
 
   const { data: response, isLoading, isFetching } = useMessages(conversationId);
@@ -37,14 +47,14 @@ export function ChatWindow({ conversationId }: ChatWindowProps) {
 
   if (!conversationId) {
     return (
-      <div className="flex min-h-[40vh] flex-1 flex-col items-center justify-center bg-white px-4 text-center text-sm text-gray-500 md:min-h-0">
+      <div className="flex min-h-[40vh] flex-1 flex-col items-center justify-center bg-card px-4 text-center text-sm text-muted-foreground md:min-h-0">
         Select a conversation to view messages.
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-white">
+    <div className="flex min-h-0 flex-1 flex-col bg-card">
       <div className="flex min-h-0 flex-1 flex-col-reverse overflow-y-auto px-3 py-4">
         {showInitialLoad ? (
           <div className="flex flex-col-reverse gap-3">
@@ -53,7 +63,7 @@ export function ChatWindow({ conversationId }: ChatWindowProps) {
             ))}
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center px-4 py-12 text-center text-sm text-gray-500">
+          <div className="flex flex-1 flex-col items-center justify-center px-4 py-12 text-center text-sm text-muted-foreground">
             No messages yet. Say hello to start the conversation.
           </div>
         ) : (
@@ -64,31 +74,49 @@ export function ChatWindow({ conversationId }: ChatWindowProps) {
           </div>
         )}
         {isFetching && !isLoading && messages.length > 0 ? (
-          <p className="pb-2 text-center text-xs text-gray-400">Updating…</p>
+          <p className="pb-2 text-center text-xs text-muted-foreground">Updating…</p>
         ) : null}
       </div>
 
-      <form
-        className="border-t border-gray-100 p-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSend();
-        }}
-      >
-        <div className="flex gap-2">
-          <Input
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Type a message…"
-            disabled={send.isPending}
-            className="flex-1"
-            aria-label="Message"
-          />
-          <Button type="submit" disabled={send.isPending || !text.trim()}>
-            Send
-          </Button>
-        </div>
-      </form>
+      <div className="border-t border-border">
+        {/* Quick-reply chips — landlord only */}
+        {isLandlord && (
+          <div className="flex gap-2 overflow-x-auto px-3 pt-2 pb-1 scrollbar-none">
+            {LANDLORD_QUICK_REPLIES.map((chip) => (
+              <button
+                key={chip}
+                type="button"
+                onClick={() => setText(chip)}
+                className="shrink-0 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <form
+          className="p-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSend();
+          }}
+        >
+          <div className="flex gap-2">
+            <Input
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Type a message…"
+              disabled={send.isPending}
+              className="flex-1"
+              aria-label="Message"
+            />
+            <Button type="submit" disabled={send.isPending || !text.trim()}>
+              Send
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

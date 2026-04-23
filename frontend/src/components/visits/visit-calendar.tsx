@@ -8,8 +8,10 @@ export interface VisitCalendarProps {
   visits: Visit[];
   userRole: UserRole;
   onApprove?: (id: string) => void;
-  onReject?: (id: string) => void;
+  onReject?: (id: string, reason?: string) => void;
   onCancel?: (id: string) => void;
+  onComplete?: (id: string) => void;
+  onReschedule?: (id: string, newDate: string) => void;
 }
 
 function startOfLocalDayMs(iso: string) {
@@ -41,6 +43,8 @@ export function VisitCalendar({
   onApprove,
   onReject,
   onCancel,
+  onComplete,
+  onReschedule,
 }: VisitCalendarProps) {
   if (visits.length === 0) {
     return (
@@ -74,6 +78,8 @@ export function VisitCalendar({
                   onApprove={onApprove}
                   onReject={onReject}
                   onCancel={onCancel}
+                  onComplete={onComplete}
+                  onReschedule={onReschedule}
                 />
               </li>
             ))}

@@ -58,7 +58,8 @@ export async function getMoversApi(city?: string, page = 1) {
 
   const { data, error, count } = await query;
 
-  if (error) {
+  // Fall back to demo data on error OR empty DB table
+  if (error || !data?.length) {
     const { demoMovers } = await import('@/lib/mock/movers');
     const filtered = city
       ? demoMovers.filter((m) => m.serviceArea.includes(city))
@@ -68,7 +69,7 @@ export async function getMoversApi(city?: string, page = 1) {
 
   const total = count ?? 0;
   return {
-    data: (data ?? []).map(mapMover),
+    data: data.map(mapMover),
     meta: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
   };
 }
@@ -80,7 +81,12 @@ export async function getMoverByIdApi(moverId: string) {
     .eq('id', moverId)
     .single();
 
-  if (error) throw new Error(error.message);
+  if (error || !data) {
+    const { demoMovers } = await import('@/lib/mock/movers');
+    const demo = demoMovers.find((m) => m.id === moverId);
+    if (demo) return demo;
+    throw new Error('Mover not found');
+  }
   return mapMover(data);
 }
 

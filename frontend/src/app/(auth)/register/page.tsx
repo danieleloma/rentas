@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { registerSchema } from '@/lib/utils/validators';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils/cn';
 
@@ -39,13 +39,9 @@ export default function RegisterPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Create an account
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Join Rentas to find or list your next place.
-        </p>
+      <div className="space-y-1 text-center">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Create an account</h1>
+        <p className="text-sm text-muted-foreground">Join Rentas to find or list your next place.</p>
       </div>
 
       {/* Form */}
@@ -62,8 +58,8 @@ export default function RegisterPage() {
         )}
         noValidate
       >
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
             <Label htmlFor="firstName">First name</Label>
             <Input
               id="firstName"
@@ -73,7 +69,7 @@ export default function RegisterPage() {
               {...register('firstName')}
             />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <Label htmlFor="lastName">Last name</Label>
             <Input
               id="lastName"
@@ -85,7 +81,7 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
@@ -97,7 +93,7 @@ export default function RegisterPage() {
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
@@ -121,7 +117,7 @@ export default function RegisterPage() {
           <p className="text-xs text-muted-foreground">Must be at least 8 characters.</p>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <Label htmlFor="confirmPassword">Confirm password</Label>
           <Input
             id="confirmPassword"
@@ -145,39 +141,28 @@ export default function RegisterPage() {
         </div>
 
         {/* Role selector */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           <Label>I am a</Label>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             {(['renter', 'landlord'] as const).map((r) => (
               <label
                 key={r}
                 className={cn(
-                  'flex cursor-pointer items-center gap-2.5 rounded-lg border px-4 py-3 text-sm font-medium transition',
+                  'flex cursor-pointer items-center justify-center rounded-lg border px-4 py-2.5 text-sm font-medium transition',
                   role === r
                     ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground',
+                    : 'border-border bg-background text-muted-foreground hover:border-foreground/50 hover:text-foreground',
                 )}
               >
-                <input
-                  type="radio"
-                  value={r}
-                  className="sr-only"
-                  {...register('role')}
-                />
-                {r.charAt(0).toUpperCase() + r.slice(1)}
+                <input type="radio" value={r} className="sr-only" {...register('role')} />
+                {r === 'renter' ? 'Renter' : 'Landlord'}
               </label>
             ))}
           </div>
-          {errors.role && (
-            <p className="text-xs text-red-600">{errors.role.message}</p>
-          )}
+          {errors.role && <p className="text-xs text-destructive">{errors.role.message}</p>}
         </div>
 
-        <Button
-          type="submit"
-          className="h-10 w-full"
-          disabled={registerPending}
-        >
+        <Button type="submit" className="w-full" disabled={registerPending}>
           {registerPending ? 'Creating account…' : 'Create account'}
         </Button>
       </form>
@@ -185,17 +170,15 @@ export default function RegisterPage() {
       {/* Divider */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border" />
+          <span className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs">
-          <span className="bg-background px-3 text-muted-foreground">Already have an account?</span>
+          <span className="bg-card px-3 text-muted-foreground">Already have an account?</span>
         </div>
       </div>
 
-      <Link
-        href="/login"
-        className="flex h-10 w-full items-center justify-center rounded-md border border-border text-sm font-medium text-foreground transition hover:bg-accent"
-      >
+      {/* Login link */}
+      <Link href="/login" className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
         Sign in
       </Link>
     </div>

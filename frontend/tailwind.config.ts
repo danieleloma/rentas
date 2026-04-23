@@ -68,18 +68,51 @@ const config: Config = {
         "2xs": ["0.625rem", { lineHeight: "0.875rem" }],
       },
       keyframes: {
+        // Existing
         "fade-in": {
           from: { opacity: "0", transform: "translateY(4px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
+          to:   { opacity: "1", transform: "translateY(0)" },
         },
         "slide-in": {
           from: { transform: "translateX(-100%)" },
-          to: { transform: "translateX(0)" },
+          to:   { transform: "translateX(0)" },
+        },
+        // Skeleton shimmer — sweeping gradient highlight
+        shimmer: {
+          "0%":   { backgroundPosition: "-400% 0" },
+          "100%": { backgroundPosition: "400% 0" },
+        },
+        // Card / modal entrance
+        "scale-in": {
+          from: { opacity: "0", transform: "scale(0.96) translateY(4px)" },
+          to:   { opacity: "1", transform: "scale(1) translateY(0)" },
+        },
+        // Staggered content reveal
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(12px)" },
+          to:   { opacity: "1", transform: "translateY(0)" },
+        },
+        // Filter / panel slide down
+        "slide-down": {
+          from: { opacity: "0", transform: "translateY(-6px)" },
+          to:   { opacity: "1", transform: "translateY(0)" },
+        },
+        // Favourite heart pop
+        "heart-pop": {
+          "0%":   { transform: "scale(1)" },
+          "40%":  { transform: "scale(1.35)" },
+          "70%":  { transform: "scale(0.9)" },
+          "100%": { transform: "scale(1)" },
         },
       },
       animation: {
-        "fade-in": "fade-in 0.2s ease-out",
-        "slide-in": "slide-in 0.25s ease-out",
+        "fade-in":    "fade-in 0.2s ease-out both",
+        "slide-in":   "slide-in 0.25s ease-out both",
+        shimmer:      "shimmer 1.8s ease-in-out infinite",
+        "scale-in":   "scale-in 0.22s cubic-bezier(0.25, 1, 0.5, 1) both",
+        "fade-up":    "fade-up 0.3s cubic-bezier(0.25, 1, 0.5, 1) both",
+        "slide-down": "slide-down 0.2s cubic-bezier(0.25, 1, 0.5, 1) both",
+        "heart-pop":  "heart-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both",
       },
     },
   },

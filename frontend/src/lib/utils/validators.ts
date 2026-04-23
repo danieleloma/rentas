@@ -31,7 +31,7 @@ export const createListingSchema = z.object({
     .string()
     .max(5000, 'Description cannot exceed 5000 characters')
     .optional(),
-  propertyType: z.enum(['apartment', 'house', 'condo', 'townhouse']),
+  propertyType: z.enum(['apartment', 'house', 'semi-detached', 'terraced', 'condo', 'studio']),
   address: z.string().min(1, 'Address is required').max(500),
   city: z.string().min(1, 'City is required').max(100),
   state: z.string().max(100).optional(),

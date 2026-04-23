@@ -7,7 +7,7 @@ import { BrowseListingGrid } from '@/components/browse/browse-listing-grid';
 import { useListings, useToggleFavorite } from '@/hooks/useListings';
 import { useAuthStore } from '@/store/authStore';
 
-export default function ListingsPage() {
+export default function PublicListingsPage() {
   const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useListings();
   const toggleFavorite = useToggleFavorite();
   const user = useAuthStore((s) => s.user);
@@ -17,12 +17,9 @@ export default function ListingsPage() {
 
   return (
     <div>
-      {/* Page header */}
-      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Properties
-          </h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Listings</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Browse verified rentals across Nigeria
           </p>

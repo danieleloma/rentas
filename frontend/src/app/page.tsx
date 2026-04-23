@@ -5,6 +5,7 @@ import {
   Zap, Droplets, Lock, MapPin, ArrowRight, CheckCircle,
 } from 'lucide-react';
 import { FeaturedListingsSection } from '@/components/home/featured-listings-section';
+import { LandingHeader } from '@/components/home/landing-header';
 
 const HERO_IMAGE =
   'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=80';
@@ -41,26 +42,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
-      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-sm font-bold tracking-tight">Rentas</span>
-            <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold text-primary">NG</span>
-          </Link>
-          <nav className="hidden items-center gap-1 md:flex">
-            <Link href="/listings" className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">Listings</Link>
-            <Link href="/movers" className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">Movers</Link>
-          </nav>
-          <div className="flex items-center gap-2">
-            <Link href="/login" className="hidden rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground md:block transition-colors">
-              Sign in
-            </Link>
-            <Link href="/register" className="rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90">
-              Get started
-            </Link>
-          </div>
-        </div>
-      </header>
+      <LandingHeader />
 
       <main>
         {/* Hero — inset rounded card */}
@@ -164,8 +146,11 @@ export default function HomePage() {
               </h2>
             </div>
             <div className="grid gap-8 md:grid-cols-3">
-              {steps.map(({ num, title, body }) => (
-                <div key={num} className="relative rounded-lg border border-border bg-card p-6">
+              {steps.map(({ num, title, body }, i) => (
+                <div
+                  key={num}
+                  className={`animate-fade-up relative rounded-lg border border-border bg-card p-6 stagger-${i + 1} transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md`}
+                >
                   <span className="text-5xl font-bold text-border">{num}</span>
                   <h3 className="mt-4 text-base font-bold text-card-foreground">{title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
@@ -188,8 +173,12 @@ export default function HomePage() {
               </h2>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map(({ icon: Icon, title, body, color }) => (
-                <div key={title} className="rounded-lg border border-border bg-card p-5">
+              {features.map(({ icon: Icon, title, body, color }, i) => (
+                <div
+                  key={title}
+                  className="animate-fade-up rounded-lg border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
                   <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${color}`}>
                     <Icon className="h-5 w-5" />
                   </div>

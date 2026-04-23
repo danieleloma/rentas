@@ -8,8 +8,12 @@ export type SkeletonProps = React.HTMLAttributes<HTMLDivElement>;
 export function Skeleton({ className, ...props }: SkeletonProps) {
   return (
     <div
+      aria-hidden="true"
       className={cn(
-        'animate-pulse rounded-md bg-gray-200',
+        'animate-shimmer rounded-md',
+        // Sweeping gradient highlight over muted base
+        'bg-[length:400%_100%]',
+        '[background-image:linear-gradient(90deg,hsl(var(--muted))_25%,hsl(var(--muted-foreground)/0.08)_50%,hsl(var(--muted))_75%)]',
         className,
       )}
       {...props}

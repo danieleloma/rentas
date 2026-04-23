@@ -210,6 +210,33 @@ export async function deleteListingApi(id: string) {
   if (error) throw new Error(error.message);
 }
 
+export async function getMyListingsApi(): Promise<Listing[]> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
+  const { data, error } = await supabase
+    .from('listings')
+    .select(LISTING_QUERY)
+    .eq('landlord_id', user.id)
+    .neq('status', 'deleted')
+    .order('created_at', { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return (data ?? []).map(mapListing);
+}
+
+export async function updateListingStatusApi(id: string, status: 'active' | 'paused' | 'deleted'): Promise<Listing> {
+  const { data, error } = await supabase
+    .from('listings')
+    .update({ status })
+    .eq('id', id)
+    .select(LISTING_QUERY)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return mapListing(data);
+}
+
 export async function toggleFavoriteApi(listingId: string) {
   const { data, error } = await supabase.rpc('toggle_favorite', {
     p_listing_id: listingId,
