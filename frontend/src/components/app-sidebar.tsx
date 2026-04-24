@@ -34,7 +34,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const navMain = [
     { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboardIcon /> },
-    { title: "Listings", url: "/listings", icon: <HomeIcon /> },
+    { title: "Listings", url: "/browse", icon: <HomeIcon /> },
     ...(isLandlord
       ? [
           { title: "My Listings", url: "/listings/manage", icon: <BuildingIcon /> },
@@ -67,7 +67,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:p-1.5!"
-              render={<Link href="/listings" />}
+              render={<Link href="/dashboard" />}
             >
               <span className="text-base font-semibold">Rentas</span>
             </SidebarMenuButton>

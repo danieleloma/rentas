@@ -13,14 +13,14 @@ export function BottomNav() {
 
   const tabs = isLandlord
     ? [
-        { href: '/listings', label: 'Browse', icon: Home },
+        { href: '/browse', label: 'Browse', icon: Home },
         { href: '/inquiries', label: 'Inbox', icon: Inbox },
         { href: '/messages', label: 'Chat', icon: MessageSquare },
         { href: '/visits', label: 'Visits', icon: Calendar },
         { href: '/profile', label: 'Profile', icon: User },
       ]
     : [
-        { href: '/listings', label: 'Browse', icon: Home },
+        { href: '/browse', label: 'Browse', icon: Home },
         { href: '/messages', label: 'Chat', icon: MessageSquare },
         { href: '/visits', label: 'Visits', icon: Calendar },
         { href: '/movers', label: 'Movers', icon: Truck },
@@ -34,7 +34,7 @@ export function BottomNav() {
     >
       <div className="flex h-16 items-stretch justify-around">
         {tabs.map(({ href, label, icon: Icon }) => {
-          const exactOnly = ['/listings'];
+          const exactOnly = ['/browse'];
           const active = pathname === href || (!exactOnly.includes(href) && pathname.startsWith(`${href}/`));
           return (
             <Link

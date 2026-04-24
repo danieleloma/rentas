@@ -26,7 +26,7 @@ function useSections() {
       label: 'Discover',
       links: [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { href: '/listings', label: 'Public Listings', icon: Home },
+        { href: '/browse', label: 'Public Listings', icon: Home },
       ],
     },
     {
@@ -221,7 +221,7 @@ interface NavLinkProps {
 
 function NavLink({ href, label, icon: Icon, collapsed, onClick }: NavLinkProps) {
   const pathname = usePathname();
-  const exactOnly = ['/dashboard', '/listings'];
+  const exactOnly = ['/dashboard', '/listings', '/browse'];
   const active = pathname === href || (!exactOnly.includes(href) && pathname.startsWith(`${href}/`));
 
   return (

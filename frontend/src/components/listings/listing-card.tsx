@@ -18,7 +18,7 @@ export function ListingCard({ listing, onFavorite, isFavorited }: ListingCardPro
 
   return (
     <div className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
-      <Link href={`/listings/${listing.id}`} className="block">
+      <Link href={`/listings/${listing.id}/preview`} className="block">
         <div className="relative aspect-[4/3] bg-gray-100 dark:bg-gray-800">
           {thumbnail ? (
             <img

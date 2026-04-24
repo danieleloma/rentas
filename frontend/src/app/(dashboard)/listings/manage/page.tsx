@@ -123,7 +123,7 @@ function ListingRow({
       {/* Actions */}
       <div className="flex shrink-0 items-center gap-0.5">
         <Link
-          href={`/listings/${listing.id}`}
+          href={`/listings/${listing.id}/preview`}
           title="View listing"
           className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >

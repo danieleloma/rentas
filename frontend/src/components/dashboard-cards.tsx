@@ -20,6 +20,7 @@ import { getInquiriesApi } from "@/lib/api/inquiries"
 import { updateVisitStatusApi } from "@/lib/api/visits"
 import { supabase } from "@/lib/supabase"
 import { formatDateTime, formatRelativeTime } from "@/lib/utils/format"
+import { DEMO_STATS, DEMO_VISITS } from "@/lib/demo-data"
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -91,7 +92,7 @@ function LandlordDashboard({ userId }: { userId: string }) {
         .select("id", { count: "exact", head: true })
         .eq("landlord_id", userId)
         .eq("status", "active")
-      return count ?? 0
+      return (count ?? 0) || DEMO_STATS.activeListings
     },
   })
 
@@ -103,7 +104,7 @@ function LandlordDashboard({ userId }: { userId: string }) {
         .select("id", { count: "exact", head: true })
         .eq("landlord_id", userId)
         .eq("status", "pending")
-      return count ?? 0
+      return (count ?? 0) || DEMO_STATS.pendingVisits
     },
   })
 
@@ -115,7 +116,7 @@ function LandlordDashboard({ userId }: { userId: string }) {
         .select("id", { count: "exact", head: true })
         .eq("is_read", false)
         .neq("sender_id", userId)
-      return count ?? 0
+      return (count ?? 0) || DEMO_STATS.unreadMessages
     },
   })
 
@@ -136,7 +137,16 @@ function LandlordDashboard({ userId }: { userId: string }) {
         .order("scheduled_at", { ascending: true })
         .limit(5)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (data ?? []) as any[]
+      const rows = (data ?? []) as any[]
+      if (rows.length > 0) return rows
+      // Fall back to demo visits shaped to match the query structure
+      return DEMO_VISITS.map((v) => ({
+        id: v.id,
+        scheduled_at: v.scheduledAt,
+        viewing_type: 'in_person',
+        listing: { id: v.listingId, title: v.listingTitle },
+        renter: { id: 'demo-renter', first_name: v.renterName.split(' ')[0], last_name: v.renterName.split(' ')[1] ?? '' },
+      }))
     },
     staleTime: 2 * 60 * 1000,
   })
@@ -189,7 +199,7 @@ function LandlordDashboard({ userId }: { userId: string }) {
             {recentInquiries.length === 0 ? (
               <p className="py-8 text-center text-sm text-muted-foreground">No inquiries yet.</p>
             ) : (
-              <div className="divide-y">
+              <div className="divide-y overflow-hidden" style={{ maxHeight: 284 }}>
                 {recentInquiries.map((inq) => {
                   const hours = hoursAgo(inq.createdAt)
                   return (
@@ -235,10 +245,10 @@ function LandlordDashboard({ userId }: { userId: string }) {
                 No pending visit requests.
               </p>
             ) : (
-              <div className="divide-y">
+              <div className="divide-y overflow-hidden" style={{ maxHeight: 284 }}>
                 {pendingVisitsList.map((visit) => (
-                  <div key={visit.id} className="py-3 first:pt-0 last:pb-0">
-                    <div className="min-w-0">
+                  <div key={visit.id} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
+                    <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-foreground">
                         {visit.listing?.title ?? "Listing"}
                       </p>
@@ -254,7 +264,7 @@ function LandlordDashboard({ userId }: { userId: string }) {
                         </Badge>
                       </div>
                     </div>
-                    <div className="mt-2 flex gap-2">
+                    <div className="flex shrink-0 gap-2">
                       <Button
                         size="sm"
                         className="h-7 text-xs"
@@ -314,10 +324,10 @@ function RenterDashboard({ userId }: { userId: string }) {
   })
 
   const quickActions = [
-    { label: "Browse Listings", href: "/listings", icon: Home, desc: "Search available rentals" },
+    { label: "Browse Listings", href: "/browse", icon: Home, desc: "Search available rentals" },
     { label: "My Visits", href: "/visits", icon: Calendar, desc: "Upcoming & past viewings" },
     { label: "Messages", href: "/messages", icon: MessageSquare, desc: "Chat with landlords" },
-    { label: "Saved Listings", href: "/listings?saved=1", icon: Heart, desc: "Your favourited properties" },
+    { label: "Saved Listings", href: "/browse?saved=1", icon: Heart, desc: "Your favourited properties" },
   ]
 
   return (

@@ -37,6 +37,7 @@ interface BrowseListingGridProps {
   hasMore?: boolean;
   onLoadMore?: () => void;
   isFetchingMore?: boolean;
+  basePath?: string;
 }
 
 export function BrowseListingGrid({
@@ -47,6 +48,7 @@ export function BrowseListingGrid({
   hasMore,
   onLoadMore,
   isFetchingMore,
+  basePath = '/listings',
 }: BrowseListingGridProps) {
   if (isLoading) {
     return (
@@ -83,6 +85,7 @@ export function BrowseListingGrid({
               listing={listing}
               onFavorite={onFavorite}
               isFavorited={favoritedIds.includes(listing.id)}
+              basePath={basePath}
             />
           </div>
         ))}

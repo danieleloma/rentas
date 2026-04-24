@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { FeaturedListingsSection } from '@/components/home/featured-listings-section';
 import { LandingHeader } from '@/components/home/landing-header';
+import { LandingAnimations } from '@/components/home/landing-animations';
 
 const HERO_IMAGE =
   'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=80';
@@ -41,12 +42,15 @@ const reviewTags = [
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* GSAP animations — runs after hydration, targets data-* attributes */}
+      <LandingAnimations />
+
       {/* Nav */}
       <LandingHeader />
 
       <main>
-        {/* Hero — inset rounded card */}
-        <section className="px-4 pt-5 sm:px-6">
+        {/* Hero */}
+        <section data-hero-section className="px-4 pt-5 sm:px-6">
           <div className="mx-auto max-w-6xl">
             <div className="relative overflow-hidden rounded-2xl" style={{ minHeight: '480px' }}>
               <Image
@@ -54,15 +58,16 @@ export default function HomePage() {
                 alt=""
                 fill
                 priority
+                data-hero-image
                 className="object-cover object-center"
                 sizes="(max-width: 1280px) 100vw, 1152px"
               />
-              {/* bottom-left gradient */}
+              {/* Gradients */}
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/30 to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/60 via-transparent to-transparent" />
 
-              {/* Floating trust chip — centre-top area */}
-              <div className="absolute left-1/2 top-7 -translate-x-1/2 hidden sm:flex">
+              {/* Floating trust chip */}
+              <div data-hero-badge className="absolute left-1/2 top-7 -translate-x-1/2 hidden sm:flex">
                 <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-medium text-white/90 backdrop-blur-md">
                   <ShieldCheck className="h-3.5 w-3.5 text-primary" />
                   Verified listings · No agent fees · Anti-fraud protection
@@ -71,25 +76,25 @@ export default function HomePage() {
 
               {/* Text — bottom left */}
               <div className="absolute bottom-0 left-0 max-w-lg p-8 sm:p-12">
-                <h1 className="text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl">
+                <h1 data-hero-title className="text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl">
                   Find Your Home
                   <span className="block text-primary">Anywhere in Nigeria</span>
                 </h1>
-                <p className="mt-3 text-sm leading-relaxed text-zinc-300 sm:text-base">
+                <p data-hero-sub className="mt-3 text-sm leading-relaxed text-zinc-300 sm:text-base">
                   Verified rentals in Lagos, Abuja, Port Harcourt and more.
                   Direct landlord contact — no middlemen, no wahala.
                 </p>
-                <div className="mt-6 flex flex-wrap gap-3">
+                <div data-hero-cta className="mt-6 flex flex-wrap gap-3">
                   <Link
                     href="/listings"
-                    className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
+                    className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-primary/90 active:scale-[0.97]"
                   >
                     Browse properties
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                   <Link
                     href="/register"
-                    className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                    className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 active:scale-[0.97]"
                   >
                     List your property
                   </Link>
@@ -100,11 +105,11 @@ export default function HomePage() {
         </section>
 
         {/* Stats bar */}
-        <section className="border-y border-border bg-muted/30">
+        <section data-stats-section className="border-y border-border bg-muted/30">
           <div className="mx-auto max-w-6xl">
             <div className="grid grid-cols-2 divide-x divide-border sm:grid-cols-4">
               {stats.map((s) => (
-                <div key={s.label} className="px-6 py-5 text-center">
+                <div key={s.label} data-stat className="px-6 py-5 text-center">
                   <p className="text-2xl font-bold text-primary sm:text-3xl">{s.value}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground">{s.label}</p>
                 </div>
@@ -114,7 +119,7 @@ export default function HomePage() {
         </section>
 
         {/* Problem statement */}
-        <section className="border-b border-border px-4 py-16 sm:px-6 sm:py-24">
+        <section data-problem-section className="border-b border-border px-4 py-16 sm:px-6 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Tired of fake listings and agent wahala?
@@ -126,7 +131,7 @@ export default function HomePage() {
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               {reviewTags.map(({ icon: Icon, label, cls }) => (
-                <span key={label} className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${cls}`}>
+                <span key={label} data-tag className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${cls}`}>
                   <Icon className="h-3.5 w-3.5" />
                   {label}
                 </span>
@@ -137,19 +142,20 @@ export default function HomePage() {
         </section>
 
         {/* How it works */}
-        <section className="bg-muted/20 px-4 py-16 sm:px-6 sm:py-24">
+        <section data-steps-section className="bg-muted/20 px-4 py-16 sm:px-6 sm:py-24">
           <div className="mx-auto max-w-6xl">
-            <div className="mb-12 text-center">
+            <div data-steps-heading className="mb-12 text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">How it works</p>
               <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 From search to keys in 3 steps
               </h2>
             </div>
             <div className="grid gap-8 md:grid-cols-3">
-              {steps.map(({ num, title, body }, i) => (
+              {steps.map(({ num, title, body }) => (
                 <div
                   key={num}
-                  className={`animate-fade-up relative rounded-lg border border-border bg-card p-6 stagger-${i + 1} transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md`}
+                  data-step
+                  className="relative rounded-lg border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <span className="text-5xl font-bold text-border">{num}</span>
                   <h3 className="mt-4 text-base font-bold text-card-foreground">{title}</h3>
@@ -164,20 +170,20 @@ export default function HomePage() {
         <FeaturedListingsSection />
 
         {/* Feature grid */}
-        <section className="border-t border-border bg-muted/20 px-4 py-16 sm:px-6 sm:py-24">
+        <section data-features-section className="border-t border-border bg-muted/20 px-4 py-16 sm:px-6 sm:py-24">
           <div className="mx-auto max-w-6xl">
-            <div className="mb-12 text-center">
+            <div data-features-heading className="mb-12 text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Platform</p>
               <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 Everything in one place
               </h2>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map(({ icon: Icon, title, body, color }, i) => (
+              {features.map(({ icon: Icon, title, body, color }) => (
                 <div
                   key={title}
-                  className="animate-fade-up rounded-lg border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
-                  style={{ animationDelay: `${i * 60}ms` }}
+                  data-feature
+                  className="rounded-lg border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${color}`}>
                     <Icon className="h-5 w-5" />
@@ -191,7 +197,7 @@ export default function HomePage() {
         </section>
 
         {/* CTA */}
-        <section className="border-t border-border bg-primary px-4 py-16 sm:px-6 sm:py-20">
+        <section data-cta-section className="border-t border-border bg-primary px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
               Ready to find your next home?
@@ -201,15 +207,17 @@ export default function HomePage() {
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
               <Link
+                data-cta-btn
                 href="/listings"
-                className="inline-flex min-w-[180px] items-center justify-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-bold text-primary transition hover:bg-white/90"
+                className="inline-flex min-w-[180px] items-center justify-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-bold text-primary transition hover:bg-white/90 active:scale-[0.97]"
               >
                 <CheckCircle className="h-4 w-4" />
                 Browse for free
               </Link>
               <Link
+                data-cta-btn
                 href="/register"
-                className="inline-flex min-w-[180px] items-center justify-center rounded-md border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                className="inline-flex min-w-[180px] items-center justify-center rounded-md border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10 active:scale-[0.97]"
               >
                 Create account
               </Link>

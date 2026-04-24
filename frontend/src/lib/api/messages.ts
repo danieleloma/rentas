@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import type { Conversation, Message } from '@/types';
+import { DEMO_CONVERSATIONS } from '@/lib/demo-data';
 
 const CONVERSATION_QUERY = `
   id, listing_id, participant_one_id, participant_two_id, last_message_at, created_at,
@@ -79,10 +80,20 @@ export async function getConversationsApi(page = 1) {
 
   if (error) throw new Error(error.message);
 
+  const mapped = (data ?? []).map(mapConversation);
+
+  if (mapped.length === 0 && page === 1) {
+    return {
+      success: true,
+      data: DEMO_CONVERSATIONS as unknown as Conversation[],
+      meta: { page: 1, limit, total: DEMO_CONVERSATIONS.length, totalPages: 1 },
+    };
+  }
+
   const total = count ?? 0;
   return {
     success: true,
-    data: (data ?? []).map(mapConversation),
+    data: mapped,
     meta: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
   };
 }

@@ -24,9 +24,10 @@ interface BrowseListingCardProps {
   listing: Listing;
   onFavorite?: (id: string) => void;
   isFavorited?: boolean;
+  basePath?: string;
 }
 
-export function BrowseListingCard({ listing, onFavorite, isFavorited }: BrowseListingCardProps) {
+export function BrowseListingCard({ listing, onFavorite, isFavorited, basePath = '/listings' }: BrowseListingCardProps) {
   const image = listing.images?.[0];
   const verif = listing.verificationStatus ?? 'unverified';
   const badge = VERIFICATION_BADGE[verif];
@@ -47,7 +48,7 @@ export function BrowseListingCard({ listing, onFavorite, isFavorited }: BrowseLi
       // Press scale
       'active:translate-y-0 active:shadow-md active:scale-[0.99]',
     )}>
-      <Link href={`/listings/${listing.id}`} className="block">
+      <Link href={`${basePath}/${listing.id}`} className="block">
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
           {image ? (

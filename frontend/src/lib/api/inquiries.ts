@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { DEMO_INQUIRIES } from '@/lib/demo-data';
 
 export interface InquiryPayload {
   listingId: string;
@@ -45,7 +46,7 @@ export async function getInquiriesApi(): Promise<Inquiry[]> {
   if (error) throw new Error(error.message);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (data ?? []).map((row: any) => ({
+  const rows = (data ?? []).map((row: any) => ({
     id: row.id,
     listingId: row.listing_id,
     landlordId: row.landlord_id,
@@ -56,4 +57,6 @@ export async function getInquiriesApi(): Promise<Inquiry[]> {
     createdAt: row.created_at,
     listing: row.listing ?? undefined,
   }));
+
+  return rows.length > 0 ? rows : DEMO_INQUIRIES;
 }
