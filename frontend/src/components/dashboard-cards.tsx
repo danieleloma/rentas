@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import {
   Building2, Inbox, Calendar, MessageSquare, ArrowRight,
-  Heart, Home, Check, X,
+  Heart, Home, Check, X, Truck, CheckCircle2, Circle,
 } from "lucide-react"
 import {
   Card,
@@ -19,8 +19,8 @@ import { useUIStore } from "@/store/uiStore"
 import { getInquiriesApi } from "@/lib/api/inquiries"
 import { updateVisitStatusApi } from "@/lib/api/visits"
 import { supabase } from "@/lib/supabase"
-import { formatDateTime, formatRelativeTime } from "@/lib/utils/format"
-import { DEMO_STATS, DEMO_VISITS } from "@/lib/demo-data"
+import { formatCurrency, formatDateTime, formatRelativeTime } from "@/lib/utils/format"
+import { DEMO_RENTER_STATS, DEMO_SAVED_LISTINGS, DEMO_STATS, DEMO_VISITS } from "@/lib/demo-data"
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -323,6 +323,73 @@ function RenterDashboard({ userId }: { userId: string }) {
     },
   })
 
+  const { data: savedCount = 0 } = useQuery({
+    queryKey: ["saved-listings-count", userId],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("favorites")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+      return (count ?? 0) || DEMO_RENTER_STATS.savedListings
+    },
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: savedPreviews = DEMO_SAVED_LISTINGS as any[] } = useQuery<any[]>({
+    queryKey: ["saved-listings-preview", userId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("favorites")
+        .select("listing:listings(id, title, price, city, listing_images(url))")
+        .eq("user_id", userId)
+        .limit(3)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const rows = (data ?? []) as any[]
+      if (rows.length > 0) {
+        return rows.map((r) => ({
+          id: r.listing?.id,
+          title: r.listing?.title,
+          price: r.listing?.price,
+          city: r.listing?.city,
+          imageUrl: r.listing?.listing_images?.[0]?.url ?? null,
+        })).filter((l) => l.id)
+      }
+      return DEMO_SAVED_LISTINGS
+    },
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: activeMoverBooking = null } = useQuery<any>({
+    queryKey: ["active-mover-booking", userId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("mover_bookings")
+        .select("id, status, scheduled_date, mover:movers(business_name)")
+        .eq("renter_id", userId)
+        .in("status", ["requested", "confirmed", "in_progress"])
+        .order("scheduled_date", { ascending: true })
+        .limit(1)
+        .maybeSingle()
+      return data
+    },
+  })
+
+  // Show onboarding checklist only when renter has no real activity yet
+  const isNewRenter = upcomingVisits === 0 && unreadMessages === 0
+
+  const onboardingSteps = [
+    { label: "Complete your profile", href: "/profile", done: false },
+    { label: "Browse available listings", href: "/browse", done: savedCount > 0 || upcomingVisits > 0 },
+    { label: "Save a favourite", href: "/browse", done: savedCount > 0 },
+    { label: "Schedule a viewing", href: "/browse", done: upcomingVisits > 0 },
+  ]
+
+  const moverStatusLabel: Record<string, string> = {
+    requested: "Awaiting confirmation",
+    confirmed: "Confirmed",
+    in_progress: "In progress",
+  }
+
   const quickActions = [
     { label: "Browse Listings", href: "/browse", icon: Home, desc: "Search available rentals" },
     { label: "My Visits", href: "/visits", icon: Calendar, desc: "Upcoming & past viewings" },
@@ -332,25 +399,147 @@ function RenterDashboard({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-6">
+      {/* ── KPI bar ── */}
       <div className="grid grid-cols-2 gap-4 @xl/main:grid-cols-4">
         <StatCard label="Upcoming Visits" value={upcomingVisits} icon={Calendar} href="/visits" />
         <StatCard label="Unread Messages" value={unreadMessages} icon={MessageSquare} href="/messages" />
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {quickActions.map(({ label, href, icon: Icon, desc }) => (
-          <Link key={href} href={href}>
-            <Card className="h-full transition-shadow hover:shadow-sm">
-              <CardContent className="flex flex-col gap-2 pt-5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary">
-                  <Icon className="size-5 text-secondary-foreground" />
+        <StatCard label="Saved Listings" value={savedCount} icon={Heart} href="/browse?saved=1" />
+        {activeMoverBooking ? (
+          <Link href="/movers">
+            <Card className="transition-shadow hover:shadow-md">
+              <CardContent className="px-5 py-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground">Mover Booking</p>
+                    <p className="mt-1 text-sm font-semibold text-foreground line-clamp-1">
+                      {activeMoverBooking.mover?.business_name ?? "Moving service"}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground capitalize">
+                      {moverStatusLabel[activeMoverBooking.status] ?? activeMoverBooking.status}
+                    </p>
+                  </div>
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <Truck className="h-4 w-4 text-primary" />
+                  </div>
                 </div>
-                <p className="text-sm font-medium">{label}</p>
-                <p className="text-xs text-muted-foreground">{desc}</p>
+                <div className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
+                  <span>View booking</span>
+                  <ArrowRight className="h-3 w-3" />
+                </div>
               </CardContent>
             </Card>
           </Link>
-        ))}
+        ) : (
+          <Link href="/movers">
+            <Card className="h-full border-dashed transition-shadow hover:shadow-sm">
+              <CardContent className="flex h-full flex-col items-center justify-center gap-2 py-6 text-center">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary">
+                  <Truck className="size-4 text-secondary-foreground" />
+                </div>
+                <p className="text-xs font-medium text-muted-foreground">Book a mover</p>
+              </CardContent>
+            </Card>
+          </Link>
+        )}
+      </div>
+
+      {/* ── 2-col widgets ── */}
+      <div className="grid grid-cols-1 gap-4 @xl/main:grid-cols-2">
+
+        {/* Saved listings preview */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between border-b pb-3">
+            <CardTitle className="text-sm font-semibold">Saved Listings</CardTitle>
+            <Link href="/browse?saved=1" className="text-xs text-muted-foreground hover:underline underline-offset-4">
+              View all
+            </Link>
+          </CardHeader>
+          <CardContent className="pt-3">
+            <div className="divide-y">
+              {savedPreviews.slice(0, 3).map((listing) => (
+                <Link
+                  key={listing.id}
+                  href={`/browse/${listing.id}`}
+                  className="flex items-center gap-3 py-3 first:pt-0 last:pb-0 group"
+                >
+                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-muted">
+                    {listing.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={listing.imageUrl} alt={listing.title} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Home className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                      {listing.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{listing.city}</p>
+                    {listing.price && (
+                      <p className="text-xs font-medium text-primary">
+                        {formatCurrency(listing.price)}<span className="text-muted-foreground font-normal">/yr</span>
+                      </p>
+                    )}
+                  </div>
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Onboarding checklist (new renters) or quick actions (active renters) */}
+        {isNewRenter ? (
+          <Card>
+            <CardHeader className="border-b pb-3">
+              <CardTitle className="text-sm font-semibold">Get started</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">Complete these steps to find your home</p>
+            </CardHeader>
+            <CardContent className="pt-3">
+              <div className="space-y-1">
+                {onboardingSteps.map(({ label, href, done }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    className="flex items-center gap-3 rounded-md px-2 py-2.5 transition-colors hover:bg-muted/60"
+                  >
+                    {done ? (
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                    ) : (
+                      <Circle className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    )}
+                    <span className={`text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>
+                      {label}
+                    </span>
+                    {!done && <ArrowRight className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
+                  </Link>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardHeader className="border-b pb-3">
+              <CardTitle className="text-sm font-semibold">Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-3">
+              <div className="grid grid-cols-2 gap-2">
+                {quickActions.map(({ label, href, icon: Icon }) => (
+                  <Link key={href} href={href}>
+                    <div className="flex items-center gap-2.5 rounded-md border border-border px-3 py-2.5 transition-colors hover:bg-muted/60">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-secondary">
+                        <Icon className="h-3.5 w-3.5 text-secondary-foreground" />
+                      </div>
+                      <p className="text-xs font-medium text-foreground">{label}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   )

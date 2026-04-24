@@ -77,7 +77,10 @@
       "Bash(grep -rn \"listings/\\\\${\" \"/Volumes/Extreme SSD/Vibecoding/Rentas/frontend/src\" --include=\"*.tsx\")",
       "Bash(grep -rn \"/listings\\\\b\\\\|listings/\\\\${\" \"/Volumes/Extreme SSD/Vibecoding/Rentas/frontend/src/app/\\(dashboard\\)\" --include=\"*.tsx\")",
       "Bash(grep -rn \"/listings\\\\b\\\\|listings/\\\\${\" \"/Volumes/Extreme SSD/Vibecoding/Rentas/frontend/src/components\" --include=\"*.tsx\")",
-      "Bash(rm -rf \"/Volumes/Extreme SSD/Vibecoding/Rentas/frontend/.next\")"
+      "Bash(rm -rf \"/Volumes/Extreme SSD/Vibecoding/Rentas/frontend/.next\")",
+      "Bash(npx eslint:*)",
+      "Bash(rm \"/Volumes/Extreme SSD/Vibecoding/Rentas/frontend/src/app/\\(browse\\)/movers/page.tsx\" \"/Volumes/Extreme SSD/Vibecoding/Rentas/frontend/src/app/\\(browse\\)/movers/[id]/page.tsx\")",
+      "Bash(rmdir \"/Volumes/Extreme SSD/Vibecoding/Rentas/frontend/src/app/\\(browse\\)/movers/[id]\")"
     ]
   }
 }

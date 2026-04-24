@@ -215,6 +215,38 @@ export const DEMO_CONVERSATIONS = [
   },
 ];
 
+// ── Renter stats + saved listings ─────────────────────────────────────────────
+
+export const DEMO_RENTER_STATS = {
+  savedListings: 3,
+  upcomingVisits: 0,
+  unreadMessages: 0,
+};
+
+export const DEMO_SAVED_LISTINGS = [
+  {
+    id: DEMO_LISTING_IDS.lekki,
+    title: '3 Bedroom Flat, Lekki Phase 1',
+    price: 3500000,
+    city: 'Lagos',
+    imageUrl: null as string | null,
+  },
+  {
+    id: DEMO_LISTING_IDS.ikeja,
+    title: '2 Bedroom Apartment, Ikeja GRA',
+    price: 2800000,
+    city: 'Lagos',
+    imageUrl: null as string | null,
+  },
+  {
+    id: DEMO_LISTING_IDS.surulere,
+    title: 'Self-Contained Room, Surulere',
+    price: 650000,
+    city: 'Lagos',
+    imageUrl: null as string | null,
+  },
+];
+
 // ── Visits ──────────────────────────────────────────────────────────────────────
 
 export const DEMO_VISITS = [
